@@ -10,7 +10,7 @@ import spark.Spark;
 
 public class WebApp {
 
-	public WebApp(RBackup rbackup, int port) {		
+	public WebApp(RBackup rbackup, int port) {
 		/**
 	     * Port Applicacion
 	     */		
@@ -23,7 +23,7 @@ public class WebApp {
 		
 		/**
 	     * Path /
-	     */	
+	     */
 		get("/", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {
@@ -36,7 +36,7 @@ public class WebApp {
 		/**
 	     * Path /getfiles
 	     * Get Files Structure
-	     */	
+	     */
 		post("/getfiles", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {
@@ -50,9 +50,9 @@ public class WebApp {
 	    });
 		
 		/**
-	     * Path /getfiles
-	     * Get Files Structure
-	     */	
+	     * Path /rbackup
+	     * Execute Backup
+	     */
 		post("/rbackup", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {	    		

@@ -63,7 +63,7 @@ public class RBackup {
 	        e.printStackTrace();
 	    }
 	}
-
+	
 	/**
 	 * Return true if Connected
 	 *
@@ -72,7 +72,7 @@ public class RBackup {
 	public boolean isConnected() {
 		return (this.conn == null ? false : true);
 	}
-		
+	
 	/**
 	 * Execute backup in SQL Server
 	 * 
