@@ -2,9 +2,9 @@ package net.yorch.rbackup;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.io.File;
 
 /**
  * RBackup Application
@@ -17,7 +17,6 @@ import java.sql.Statement;
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
 public class RBackup {
-	
 	/**
      * Connection DB Handler
      *
@@ -29,10 +28,10 @@ public class RBackup {
 	/**
 	 * Constructor of Class
 	 *
-	 * @param hostname String Servidor de Bases de Datos
-	 * @param username String Usuario de Bases de Datos
-	 * @param password String Password de Bases de Datos
-	 * @param dbname String Nombre de Base de Datos o Recurso
+	 * @param hostname String DataBase Server
+	 * @param username String DataBase User
+	 * @param password String User Password
+	 * @param dbname String DataBase Name
 	 * @return Instance 
 	 * @see RBackup
 	 */
@@ -66,22 +65,47 @@ public class RBackup {
 	 * 
 	 * @param filename String Filename of Backup
 	 * @param database String DataBase name
-	 * @return
+	 * @return int 0 successful 1 File Exists 2 Not Connected 3 SQL Exception
 	 */
-	public boolean backup (String filename, String database) {
-		String query = "BACKUP DATABASE mydb TO  DISK = 'C:\\DBF\\mydb.bak' WITH COMPRESSION, NOFORMAT, INIT, NAME = N'Full Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
-			
-		Statement stmt = null;
-        
-		if (this.isConnected()){
-			try {
-				stmt = this.conn.createStatement();
-				stmt.execute(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
+	public int backup (String filename, String database) {
+		int retValue = 0;
+		
+		if (this.fileExists(filename))
+			retValue = 1;
+		else{
+			StringBuffer query = new StringBuffer("BACKUP DATABASE ");
+			query.append(database);
+			query.append(" TO  DISK = '");
+			query.append(filename);
+			query.append("' WITH COMPRESSION, NOFORMAT, INIT, NAME = N'Full Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10");
+					
+			Statement stmt = null;
+	        
+			if (this.isConnected()){
+				try {
+					stmt = this.conn.createStatement();
+					stmt.execute(query.toString());
+				} catch (SQLException e) {
+					retValue = 3;
+					e.printStackTrace();
+				}
 			}
+			else
+				retValue = 2;
 		}
 		
-		return true;		
+		return retValue;		
+	}
+	
+	/**
+	 * Check if file exists
+	 * 
+	 * @param filename String Filename of Backup
+	 * @return boolean
+	 */
+	private boolean fileExists(String filename){
+		File bakFile = new File(filename);
+	
+		return bakFile.exists();
 	}
 }

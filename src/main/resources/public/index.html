@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<title>jQuery File Tree Demo</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		
+		<style type="text/css">
+			.body {
+			 	min-height: 2000px;
+			}
+
+			.navbar-static-top {
+			  	margin-bottom: 19px;
+			}
+
+			.navbar
+			{
+				min-height:124px;
+			}
+
+			.bsnavbar
+			{
+			  	margin-bottom: 19px;
+				min-height:124px;
+			}
+			
+			.example {
+				float: left;
+				margin: 15px;
+			}
+			
+			.file_explorer {
+				width: 300px;
+				height: 400px;
+				border-top: solid 1px #BBB;
+				border-left: solid 1px #BBB;
+				border-bottom: solid 1px #FFF;
+				border-right: solid 1px #FFF;
+				background: #FFF;
+				overflow: scroll;
+				padding: 5px;
+			}
+
+			.modal-static { 
+		        position: fixed;
+		        top: 50% !important; 
+		        left: 50% !important; 
+		        margin-top: -100px;  
+		        margin-left: -100px; 
+		        overflow: visible !important;
+		    }
+
+		    .modal-static,
+		    .modal-static .modal-dialog,
+		    .modal-static .modal-content {
+		        width: 200px; 
+		        height: 200px; 
+		    }
+
+		    .modal-static .modal-dialog,
+		    .modal-static .modal-content {
+		        padding: 0 !important; 
+		        margin: 0 !important;
+		    }
+
+		    .modal-static .modal-content .icon {
+		    }
+		</style>
+		
+		<script src="./jquery.fileTree-1.01/jquery-1.9.1.js" type="text/javascript"></script>
+		<script src="./jquery.fileTree-1.01/jquery.easing.js" type="text/javascript"></script>
+		<script src="./jquery.fileTree-1.01/jqueryFileTree.js" type="text/javascript"></script>
+		<link href="./jquery.fileTree-1.01/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+		<link rel="stylesheet" href="./bootstrap-3.2.0-dist/css/bootstrap.min.css" />
+		<script src="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+		
+		<script type="text/javascript">
+			
+			$(document).ready( function() {
+				
+				$('#explorer').fileTree({ root: './', script: '/getfiles', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) { 
+					file = file.substring(2);
+
+					$('#processing-modal').modal('toggle');
+					$('#label-process').html('Procesando: ' + file);
+
+					$.post('/rbackup', {dbf: file},
+	                    function(respuesta) {
+	                    	$('#processing-modal').modal('hide');
+	                        console.log(respuesta);
+	                }).error(
+	                    function(){
+	                        console.log('Error al ejecutar la petición');
+	                    }
+	                );
+				});
+				
+			});
+		</script>
+
+	</head>
+	
+	<body>
+		<div class="navbar navbar-default navbar-static-top bsnavbar">
+	      <div class="container">
+	      	<div class="navbar-header">
+	          <h1>RBackup</h1>
+	    	</div>
+	      </div>
+	    </div>
+		
+		<div class="example">
+			<div id="explorer" class="file_explorer"></div>
+		</div>
+	
+	  <!-- Static Modal -->
+	  <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+	      <div class="modal-dialog">
+	          <div class="modal-content">
+	              <div class="modal-body">
+	                  <div class="text-center">
+	                      <img src="./img/procesando.gif" class="icon" />
+	                      <h5 id="label-process">Procesando... 
+	                      </h5>
+	                  </div>
+	              </div>
+	          </div>
+	      </div>
+	  </div>
+
+	</body>
+</html>
