@@ -14,6 +14,16 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 
+/**
+ * Web Application
+ *
+ * @category   WebApp
+ * @package    net.yorch.rbackup
+ * @copyright  Copyright 2015 JAPT
+ * @license    http://www.apache.org/licenses/LICENSE-2.0
+ * @version    1.0.0, 2015-14-01
+ * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
+ */
 public class WebApp {
 	/**
      * Application User
@@ -47,6 +57,7 @@ public class WebApp {
 	 * @param user String Application User
 	 * @param password String Application User Password
 	 * @param basedir String Directory Base
+	 * @see WebApp
 	 */
 	public WebApp(RBackup rbackup, int port, String user, String password, String basedir) {
 		this.appUser = user;
@@ -150,7 +161,6 @@ public class WebApp {
 	 * @return boolean
 	 */
 	private boolean login(String user, String password){
-		
 		if (user.equals(this.appUser) && password.equals(this.appPassword))
 			return true;
 		else
