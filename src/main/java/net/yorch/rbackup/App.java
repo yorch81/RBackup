@@ -19,34 +19,35 @@ public class App {
 	    	else{
 	    		config.load(new FileInputStream("rbackup.properties"));
 	    	}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		String hostname = config.getProperty("hostname");
-		String user = config.getProperty("user");
-		String password = config.getProperty("password");
-		String dbname = config.getProperty("dbname");
-		String port = config.getProperty("port");
-		String basedir = config.getProperty("basedir");
-		
-		/**
-	     * RBackup Application
-	     */	
-		RBackup rbackup = new RBackup(hostname, user, password, dbname, basedir);
-		
-		if (rbackup.isConnected()){
-			if (rbackup.basedirExists()){
-				new WebApp(rbackup, Integer.parseInt(port));
+			
+			String hostname = config.getProperty("hostname");
+			String user = config.getProperty("user");
+			String password = config.getProperty("password");
+			String dbname = config.getProperty("dbname");
+			String port = config.getProperty("port");
+			String basedir = config.getProperty("basedir");
+			String appUser = config.getProperty("appuser");
+			String appPassword = config.getProperty("apppassword");
+			
+			/**
+		     * RBackup Application
+		     */	
+			RBackup rbackup = new RBackup(hostname, user, password, dbname);
+			
+			if (WebApp.basedirExists(basedir)){
+				if (rbackup.isConnected()){
+					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir);
+				}
+				else
+					System.out.println("Could not connect to SQL Server");
 			}
 			else
-				System.out.println("Directory Base Not Exists");
+				System.out.println("Directory Base not Exists");			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		else
-			System.out.println("Could not connect to SQL Server");
 	}
 }
