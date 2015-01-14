@@ -100,7 +100,7 @@ public class WebApp {
 	        public Object handle(Request request, Response response) {
 	        	String dir = request.queryParams("dir");
 	        	
-	        	String fs = getFiles(dir, request);
+	        	String fs = getFiles(dir);
 	        	
 	        	return fs;
 	        }
@@ -113,13 +113,15 @@ public class WebApp {
 		post("/rbackup", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {	 
-	        	String currentDir = request.session().attribute("currentdir");
+	        	String currentDir = request.queryParams("currentdir");
+	        	String fileName = request.queryParams("filename");
+	        	String dbName = request.queryParams("dbname");
 	        	
 	        	if (currentDir != null){
-	        		currentDir = currentDir + "mydb.bak";
+	        		currentDir = currentDir + fileName;
 	        	}
-	        	
-	    		rbackup.backup(currentDir, "mydb");
+	        	       	
+	    		int result = rbackup.backup(currentDir, dbName);
 	    			        	
 	        	return "redirect";
 	        	
@@ -200,10 +202,9 @@ public class WebApp {
 	 * Return Files Structure
 	 * 
 	 * @param dir String Subdirectory
-	 * @param request Request request
 	 * @return String Files Structure
 	 */
-	private String getFiles(String dir, Request request){
+	private String getFiles(String dir){
 		StringBuffer fs = new StringBuffer("");
 						
 		if (dir == null) {
@@ -226,9 +227,6 @@ public class WebApp {
 		if (dir.equals("./")){
 			dir = this.basedir;
 		}
-		
-		// Create currentdir Session
-		request.session().attribute("currentdir", dir);
 		
 	    if (new File(dir).exists()) {
 			String[] files = new File(dir).list(new FilenameFilter() {

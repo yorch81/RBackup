@@ -76,31 +76,70 @@
 		<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
 		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
 		
-		<script type="text/javascript">
-			
-			$(document).ready( function() {
+		<script type="text/javascript">	
+			function RBackup(){
+				var currentDir = "";
+				var fileName = "";
+				var dbName = "";
+				
+				this.setCurrentDir =  function(pCurrentDir){
+					currentDir = pCurrentDir;
+				}
+				
+				this.setFileName = function(pFileName){
+					fileName = pFileName;
+				}
+				
+				this.setDbName = function(pDbName){
+					dbName = pDbName;
+				}
+				
+				this.getCurrentDir =  function(){
+					return currentDir;
+				}
+				
+				this.getFileName = function(){
+					return fileName;
+				}
+				
+				this.getDbName = function(){
+					return dbName;
+				}
+				
+				this.backup = function(){	
+					$('#processing-modal').modal('toggle');
+					$('#label-process').html('Processing: ' + fileName);
+					
+					$.post('/rbackup', {currentdir: currentDir, filename: fileName, dbname: dbName},
+		                    function(respuesta) {
+		                    	$('#processing-modal').modal('hide');
+		                        console.log(respuesta);
+		                        location.reload(true)
+		                }).error(
+		                    function(){
+		                        console.log('Error al ejecutar la petición');
+		                    }
+		                );
+				}
+			}
+		
+			$(document).ready( function() {				
+				var rbackup =  new RBackup();
 				
 				$('#explorer').fileTree({ root: './', script: '/getfiles', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) { 
 					file = file.substring(2);
-
-					$('#processing-modal').modal('toggle');
-					$('#label-process').html('Procesando: ' + file);
-
-					$.post('/rbackup', {dbf: file},
-	                    function(respuesta) {
-	                    	$('#processing-modal').modal('hide');
-	                        console.log(respuesta);
-	                }).error(
-	                    function(){
-	                        console.log('Error al ejecutar la petición');
-	                    }
-	                );
 				});
-				
+			
 				$('#explorer').on('filetreeexpand', 
 			    		function (e, data){
-			    			console.log(data.rel); 
-			    		});
+			    			rbackup.setCurrentDir(data.rel);
+			    			rbackup.setFileName("mcs.bak");
+			    			rbackup.setDbName("MCS");
+			    });
+				
+				$("#btn_backup").click(function(){
+					rbackup.backup();
+			     });
 			});
 		</script>
 
@@ -117,22 +156,24 @@
 		
 		<div class="example">
 			<div id="explorer" class="file_explorer"></div>
+			
+			<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
 		</div>
 	
-	  <!-- Static Modal -->
-	  <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
-	      <div class="modal-dialog">
-	          <div class="modal-content">
-	              <div class="modal-body">
-	                  <div class="text-center">
-	                      <img src="./img/procesando.gif" class="icon" />
-	                      <h5 id="label-process">Procesando... 
-	                      </h5>
-	                  </div>
-	              </div>
-	          </div>
-	      </div>
-	  </div>
+		<!-- Static Modal -->
+		<div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		           <div class="modal-body">
+		                <div class="text-center">
+		                    <img src="./img/procesando.gif" class="icon" />
+		                    <h5 id="label-process">Processing... 
+		                    </h5>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
 
 	</body>
 </html>
