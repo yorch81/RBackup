@@ -3,6 +3,7 @@ package net.yorch.rbackup;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -124,5 +125,30 @@ public class RBackup {
 		File bakFile = new File(filename);
 	
 		return bakFile.exists();
+	}
+	
+	/**
+	 * Return a ResultSet with DataBases List
+	 * 
+	 * @return ResultSet
+	 */
+	public ResultSet dbList () {
+		Statement stmt = null;
+        String query = "SELECT UPPER(sdb.name) AS description FROM master..sysdatabases sdb WHERE sdb.name NOT IN ('master','model','msdb','pubs','northwind','tempdb') ORDER BY sdb.name";
+        ResultSet rs = null;
+        
+		if (this.isConnected()){
+			try {
+				stmt = this.conn.createStatement();
+				rs = stmt.executeQuery(query);
+			} catch (SQLException e) {
+				rs = null;
+				e.printStackTrace();
+			}
+		}
+		else
+			rs = null;
+		
+		return rs;
 	}
 }

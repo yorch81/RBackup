@@ -57,6 +57,8 @@ public class App {
 		     */	
 			RBackup rbackup = new RBackup(hostname, user, password, dbname);
 			
+			rbackup.dbList();
+			
 			if (WebApp.basedirExists(basedir)){
 				if (rbackup.isConnected()){
 					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir);
