@@ -146,8 +146,6 @@ public class RBackup {
 				e.printStackTrace();
 			}
 		}
-		else
-			rs = null;
 		
 		return rs;
 	}

@@ -1,7 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<title>RBackup</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -132,12 +130,15 @@
 			
 				$('#explorer').on('filetreeexpand', 
 			    		function (e, data){
-			    			rbackup.setCurrentDir(data.rel);
-			    			rbackup.setFileName("mcs.bak");
-			    			rbackup.setDbName("MCS");
+							$('#txtPath').val(data.rel)
+			    			
 			    });
 				
 				$("#btn_backup").click(function(){
+					rbackup.setCurrentDir($('#txtPath').val());
+	    			rbackup.setFileName($('#txtFile').val());
+	    			rbackup.setDbName($('#cmbDb').val());
+	    			
 					rbackup.backup();
 			     });
 			});
@@ -154,12 +155,25 @@
 	      </div>
 	    </div>
 		
-		<div class="example">
-			<div id="explorer" class="file_explorer"></div>
-			
-			<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
+		<div class="container">
+			<div class="example">
+				<label for="txtPath">Selected Path:</label>
+				<input id="txtPath" type="text" class="form-control" placeholder="Path" name="txtPath" required disabled>
+				
+				<label for="cmbDb">DataBases:</label>
+				<select id="cmbDb" class="form-control">
+				  <option value="MAEAS">MAEAS</option>
+				  <option value="MCS">MCS</option>
+				  <option value="mydb">mydb</option>
+				</select>
+				
+				<input id="txtFile" type="text" class="form-control" placeholder="FileName" name="txtFile" required>
+				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
+				
+				<div id="explorer" class="file_explorer"></div>
+			</div>
 		</div>
-	
+		
 		<!-- Static Modal -->
 		<div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
