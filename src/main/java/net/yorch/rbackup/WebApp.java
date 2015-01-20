@@ -139,8 +139,7 @@ public class WebApp {
 	        	       	
 	    		int result = rbackup.backup(currentDir, dbName);
 	    			        	
-	        	return "redirect";
-	        	
+	        	return String.valueOf(result);
 	        }
 	    });
 		

@@ -13,13 +13,11 @@
 			  	margin-bottom: 19px;
 			}
 
-			.navbar
-			{
+			.navbar {
 				min-height:124px;
 			}
 
-			.bsnavbar
-			{
+			.bsnavbar {
 			  	margin-bottom: 19px;
 				min-height:124px;
 			}
@@ -31,7 +29,7 @@
 			
 			.file_explorer {
 				width: 300px;
-				height: 400px;
+				height: 300px;
 				border-top: solid 1px #BBB;
 				border-left: solid 1px #BBB;
 				border-bottom: solid 1px #FFF;
@@ -75,49 +73,94 @@
 		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
 		
 		<script type="text/javascript">	
+			/**
+			 * Execute Remote Backup
+			 */
 			function RBackup(){
 				var currentDir = "";
 				var fileName = "";
 				var dbName = "";
 				
+				/**
+				 * Sets Current Directory
+				 * @param String pCurrentDir Current Directory
+				 */
 				this.setCurrentDir =  function(pCurrentDir){
 					currentDir = pCurrentDir;
 				}
 				
+				/**
+				 * Sets Backup File name
+				 * @param String pFileName Backup File Name
+				 */
 				this.setFileName = function(pFileName){
 					fileName = pFileName;
 				}
 				
+				/**
+				 * Sets Database Name to Backup
+				 * @param String pDbName Database Name
+				 */
 				this.setDbName = function(pDbName){
 					dbName = pDbName;
 				}
 				
+				/**
+				 * Gets Current Directory
+				 * @return String Current Directory
+				 */
 				this.getCurrentDir =  function(){
 					return currentDir;
 				}
 				
+				/**
+				 * Gets Backup File name
+				 * @return String Backup File name
+				 */
 				this.getFileName = function(){
 					return fileName;
 				}
 				
+				/**
+				 * Gets Database Name to Backup
+				 * @return String Database Name 
+				 */
 				this.getDbName = function(){
 					return dbName;
 				}
 				
+				/**
+				 * Execute Backup
+				 * @return void
+				 */
 				this.backup = function(){	
-					$('#processing-modal').modal('toggle');
-					$('#label-process').html('Processing: ' + fileName);
-					
-					$.post('/rbackup', {currentdir: currentDir, filename: fileName, dbname: dbName},
-		                    function(respuesta) {
-		                    	$('#processing-modal').modal('hide');
-		                        console.log(respuesta);
-		                        location.reload(true)
-		                }).error(
-		                    function(){
-		                        console.log('Error al ejecutar la petición');
-		                    }
-		                );
+					if (fileName == ""){
+						alert("Must type Backup File Name");
+						$('#txtFile').focus();
+					}
+					else{
+						$('#processing-modal').modal('toggle');
+						$('#label-process').html('Processing: ' + fileName);
+						
+						$.post('/rbackup', {currentdir: currentDir, filename: fileName, dbname: dbName},
+								function(response,status) {
+			                    	$('#processing-modal').modal('hide');
+			                        		                        
+			                        if (response == '1') {
+			                        	alert("File not Exists");
+			                        } else if (response == '2') {
+			                        	alert("Not Connected to SQL Server");
+			                        } else if (response == '3') {
+			                        	alert("SQL Server Exception");
+			                        }
+				                        
+			                        location.reload(true)
+			                }).error(
+			                    function(){
+			                        console.log('Application not responding');
+			                    }
+			                );
+					}
 				}
 			}
 		
@@ -130,8 +173,7 @@
 			
 				$('#explorer').on('filetreeexpand', 
 			    		function (e, data){
-							$('#txtPath').val(data.rel)
-			    			
+							$('#txtPath').val(data.rel);
 			    });
 				
 				$("#btn_backup").click(function(){
@@ -167,7 +209,7 @@
 				  <option value="mydb">mydb</option>
 				</select>
 				
-				<input id="txtFile" type="text" class="form-control" placeholder="FileName" name="txtFile" required>
+				<input id="txtFile" type="text" class="form-control" placeholder="Backup File Name" name="txtFile" required>
 				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
 				
 				<div id="explorer" class="file_explorer"></div>
