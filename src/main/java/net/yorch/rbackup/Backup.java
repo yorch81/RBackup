@@ -1,11 +1,13 @@
 package net.yorch.rbackup;
 
+import java.io.File;
+import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
- * RBackup
+ * Backup
  * 
- * RBackup Application
+ * Abstract Class to Generate Backup
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -21,63 +23,21 @@ import java.sql.ResultSet;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   RBackup
+ * @category   Backup
  * @package    net.yorch.rbackup
  * @copyright  Copyright 2015 JAPT
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- * @version    1.0.0, 2015-12-01
+ * @version    1.0.0, 2015-20-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
-public class RBackup {
+public abstract class Backup {
 	/**
-	 * DataBase Types
-	 */
-	public static final int MSSQLSERVER=1;
-    public static final int MYSQL=2;
-	
-    /**
-     * instance of Backup
+     * Connection DB Handler
+     *
+     * VAR Connection conn DB Connection
+     * @access protected
      */
-    private Backup backup = null;
-    
-	/**
-	 * Constructor of Class
-	 *
-	 * @param type int DataBase Type
-	 * @param hostname String DataBase Server
-	 * @param username String DataBase User
-	 * @param password String User Password
-	 * @param dbname String DataBase Name
-	 * @param basedir String Directory Base
-	 * @return Instance 
-	 * @see RBackup
-	 */
-	public RBackup(int type, String hostname, String username, String password, String dbname) {
-		if (type == RBackup.MSSQLSERVER)
-			backup = new bakSQLServer(hostname, username, password, dbname);
-		else
-			backup = new bakMySQL(hostname, username, password, dbname);
-	}	
-
-	/**
-	 * Execute backup in SQL Server
-	 * 
-	 * @param filename String Filename of Backup
-	 * @param database String DataBase name
-	 * @return int 0 successful 1 File Exists 2 Not Connected 3 SQL Exception
-	 */
-	public int backup(String filename, String database) {
-		return backup.backup(filename, database);
-	}
-	
-	/**
-	 * Return a ResultSet with DataBases List
-	 * 
-	 * @return ResultSet
-	 */
-	public ResultSet dbList() {
-		return backup.dbList();
-	}
+	protected Connection conn = null;
 	
 	/**
 	 * Return true if Connected
@@ -85,6 +45,34 @@ public class RBackup {
 	 * @return boolean
 	 */	
 	public boolean isConnected() {
-		return backup.isConnected();
+		return (this.conn == null ? false : true);
 	}
+		
+	/**
+	 * Check if file exists
+	 * 
+	 * @param filename String Filename of Backup
+	 * @return boolean
+	 */
+	protected boolean fileExists(String filename){
+		File bakFile = new File(filename);
+	
+		return bakFile.exists();
+	}
+	
+	/**
+	 * Execute backup in SQL Server
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @return int 0 successful 1 File Exists 2 Not Connected 3 SQL Exception
+	 */
+	public abstract int backup (String filename, String database);
+	
+	/**
+	 * Return a ResultSet with DataBases List
+	 * 
+	 * @return ResultSet
+	 */
+	public abstract ResultSet dbList ();
 }

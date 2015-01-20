@@ -43,6 +43,7 @@ public class App {
 	    		config.load(new FileInputStream("rbackup.properties"));
 	    	}
 			
+			String dbType = config.getProperty("dbtype");
 			String hostname = config.getProperty("hostname");
 			String user = config.getProperty("user");
 			String password = config.getProperty("password");
@@ -55,20 +56,22 @@ public class App {
 			/**
 		     * RBackup Application
 		     */	
-			RBackup rbackup = new RBackup(hostname, user, password, dbname);
+			RBackup rbackup = null;
 			
-			rbackup.dbList();
+			if (dbType.equals("MSSQLSERVER"))
+				rbackup = new RBackup(RBackup.MSSQLSERVER, hostname, user, password, dbname);
+			else
+				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname);
 			
 			if (WebApp.basedirExists(basedir)){
 				if (rbackup.isConnected()){
 					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir);
 				}
 				else
-					System.out.println("Could not connect to SQL Server");
+					System.out.println("Could not connect to DataBase Server");
 			}
 			else
 				System.out.println("Directory Base not Exists");			
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
