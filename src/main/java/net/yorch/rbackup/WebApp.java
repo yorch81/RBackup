@@ -3,11 +3,17 @@ package net.yorch.rbackup;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.SparkBase.setPort;
+import static spark.Spark.halt;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import spark.Request;
 import spark.Response;
@@ -96,14 +102,21 @@ public class WebApp {
 		get("/", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {
+	        	StringWriter template = null;
+	        	
 	        	if (existsSession(request)){
-	        		response.redirect("/rbackup.html");
+	        		template = getRBackupTemplate(rbackup);
 	        	}
 	        	else
-	        		response.redirect("/login.html");
+	        		template = getLoginTemplate();
 	        	
-	        	
-	        	return "redirect";
+	        	if (template == null)
+	        		halt(500, "Internal Error");
+					
+				response.status(200);
+					
+				// Returns Template
+				return template;
 	        }
 	    });
 				
@@ -168,6 +181,66 @@ public class WebApp {
 	        }
 	    });
 		
+	}
+	
+	/**
+	 * Return Login Template
+	 * 
+	 * @return StringWriter
+	 */
+	private StringWriter getLoginTemplate() {
+		FMTemplate loginTemp = new FMTemplate("login.ftl", null);
+		StringWriter swLogin = loginTemp.get();
+		
+		loginTemp = null;
+		
+		return swLogin;
+	}
+	
+	/**
+	 * Return RBackup Template
+	 * 
+	 * @param rbackup Instance of RBackup
+	 * @return StringWriter
+	 */
+	private StringWriter getRBackupTemplate(RBackup rbackup) {
+		Map<String, Object> tempData = new HashMap<String, Object>();
+		String listDb = dbAsOption(rbackup.dbList());
+		
+		tempData.put("listDb", listDb);
+		tempData.put("baseDir", this.basedir);
+		
+		FMTemplate rbackupTemp = new FMTemplate("rbackup.ftl", tempData);
+		
+		StringWriter swRBackup = rbackupTemp.get();
+		
+		rbackupTemp = null;
+		
+		return swRBackup;
+	}
+	
+	/**
+	 * Return List DataBases as HTML Option 
+	 * 
+	 * @param rsDb ResultSet of List of DataBases
+	 * @return String
+	 */
+	private String dbAsOption(ResultSet rsDb) {
+		StringBuilder html = new StringBuilder("");
+		
+		try {
+			while(rsDb.next()){
+				html.append("<option value=\"");
+				html.append(rsDb.getString("description"));
+				html.append("\">");
+				html.append(rsDb.getString("description"));
+				html.append("</option>\n");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return html.toString();
 	}
 	
 	/**

@@ -147,11 +147,11 @@
 			                    	$('#processing-modal').modal('hide');
 			                        		                        
 			                        if (response == '1') {
-			                        	alert("File not Exists");
+			                        	alert("File Already Exists");
 			                        } else if (response == '2') {
 			                        	alert("Not Connected to SQL Server");
 			                        } else if (response == '3') {
-			                        	alert("SQL Server Exception");
+			                        	alert("DataBase Server Exception");
 			                        }
 				                        
 			                        location.reload(true)
@@ -200,13 +200,11 @@
 		<div class="container">
 			<div class="example">
 				<label for="txtPath">Selected Path:</label>
-				<input id="txtPath" type="text" class="form-control" placeholder="Path" name="txtPath" required disabled>
+				<input id="txtPath" type="text" class="form-control" placeholder="Path" name="txtPath" value = "${baseDir}" required disabled>
 				
 				<label for="cmbDb">DataBases:</label>
 				<select id="cmbDb" class="form-control">
-				  <option value="MAEAS">MAEAS</option>
-				  <option value="MCS">MCS</option>
-				  <option value="mydb">mydb</option>
+					${listDb}
 				</select>
 				
 				<input id="txtFile" type="text" class="form-control" placeholder="Backup File Name" name="txtFile" required>
