@@ -9,6 +9,7 @@ import java.sql.Statement;
  * bakMySQL
  * 
  * Implementation of MySQL Backups
+ * NOTE: The executable file of mysqldump must be accesible on Operating System PATH
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
