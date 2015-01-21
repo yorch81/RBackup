@@ -58,7 +58,12 @@
   </head>
 
   <body>
-	
+	<#if loginError?has_content>
+		<div class="alert alert-danger" role="alert">
+	      <strong>Login Error !!!</strong> ${loginError}.
+	    </div>
+	</#if>
+
     <div class="container">
       <form class="form-signin" role="form" action="/webauth" method="POST">
         <h2 class="form-signin-heading">RBackup Application</h2>

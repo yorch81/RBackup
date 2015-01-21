@@ -104,12 +104,14 @@ public class WebApp {
 	        public Object handle(Request request, Response response) {
 	        	StringWriter template = null;
 	        	
-	        	if (existsSession(request)){
+	        	if (existsSession(request)){	        		
 	        		template = getRBackupTemplate(rbackup);
 	        	}
-	        	else
-	        		template = getLoginTemplate();
-	        	
+	        	else{
+	        		String LoginError = request.session().attribute("loginerror");
+	        		template = getLoginTemplate(LoginError);
+	        	}
+	        		
 	        	if (template == null)
 	        		halt(500, "Internal Error");
 					
@@ -173,7 +175,9 @@ public class WebApp {
 	        		return "";
 	        	}
 	        	else{
-	        		response.status(401);
+	        		request.session().attribute("loginerror", "Could not login with credentials");
+	        		
+	        		response.status(401);	        		
 	        		response.redirect("/");
 	        		
 	        		return "Could not login with credentials";
@@ -186,10 +190,15 @@ public class WebApp {
 	/**
 	 * Return Login Template
 	 * 
+	 * @param loginError String Error Login if Exits
 	 * @return StringWriter
 	 */
-	private StringWriter getLoginTemplate() {
-		FMTemplate loginTemp = new FMTemplate("login.ftl", null);
+	private StringWriter getLoginTemplate(String loginError) {
+		Map<String, Object> tempData = new HashMap<String, Object>();
+		tempData.put("loginError", loginError);
+		
+		FMTemplate loginTemp = new FMTemplate("login.ftl", tempData);
+		
 		StringWriter swLogin = loginTemp.get();
 		
 		loginTemp = null;
