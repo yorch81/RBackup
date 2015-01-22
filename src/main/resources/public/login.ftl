@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  	<title>RBackup Login</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>RBackup Login</title>
-
+    <meta name="description" content="Login for RBackup Application">
+    <meta name="author" content="Jorge Alberto Ponce Turrubiates">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico">
+	
 	<script src="./js/jquery-1.9.1.js" type="text/javascript"></script>
     <link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
 	<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
@@ -58,13 +59,12 @@
   </head>
 
   <body>
-	<#if loginError?has_content>
-		<div class="alert alert-danger" role="alert">
-	      <strong>Login Error !!!</strong> ${loginError}.
-	    </div>
-	</#if>
-
     <div class="container">
+      <#if loginError?has_content>
+      	<div class="alert alert-danger" role="alert">
+      		<strong>Login Error !!!</strong> ${loginError}.
+      	</div>
+	  </#if>
       <form class="form-signin" role="form" action="/webauth" method="POST">
         <h2 class="form-signin-heading">RBackup Application</h2>
         <input type="text" class="form-control" placeholder="Application User" name="txtUser" required autofocus>

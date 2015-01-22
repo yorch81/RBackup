@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>RBackup</title>
+		<title>RBackup Application</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="RBackup Application">
+		<meta name="author" content="Jorge Alberto Ponce Turrubiates">
 		
+    	<link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico">
+    	
 		<style type="text/css">
 			.body {
 			 	min-height: 2000px;
@@ -208,9 +213,10 @@
 				</select>
 				
 				<input id="txtFile" type="text" class="form-control" placeholder="Backup File Name" name="txtFile" required>
-				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
-				
+								
 				<div id="explorer" class="file_explorer"></div>
+				
+				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
 			</div>
 		</div>
 		
@@ -220,7 +226,7 @@
 		        <div class="modal-content">
 		           <div class="modal-body">
 		                <div class="text-center">
-		                    <img src="./img/procesando.gif" class="icon" />
+		                    <img src="./img/processing.gif" class="icon" />
 		                    <h5 id="label-process">Processing... 
 		                    </h5>
 		                </div>

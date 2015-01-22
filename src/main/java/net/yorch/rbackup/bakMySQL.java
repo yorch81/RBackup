@@ -103,6 +103,9 @@ public class bakMySQL extends Backup {
 					
 					execute(command.toString());
 					
+					if (! this.fileExists(filename))
+						retValue = 3;
+					
 					stmt.execute("UNLOCK TABLES;");
 				} catch (SQLException e) {
 					retValue = 3;
