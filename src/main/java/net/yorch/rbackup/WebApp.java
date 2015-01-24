@@ -144,15 +144,10 @@ public class WebApp {
 		post("/rbackup", new Route() {
 	        @Override
 	        public Object handle(Request request, Response response) {	 
-	        	String currentDir = request.queryParams("currentdir");
 	        	String fileName = request.queryParams("filename");
 	        	String dbName = request.queryParams("dbname");
-	        	
-	        	if (currentDir != null){
-	        		currentDir = currentDir + fileName;
-	        	}
-	        	       	
-	    		int result = rbackup.backup(currentDir, dbName);
+	        	     	
+	    		int result = rbackup.backup(fileName, dbName);
 	    			        	
 	        	return String.valueOf(result);
 	        }

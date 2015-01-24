@@ -146,8 +146,9 @@
 					else{
 						$('#processing-modal').modal('toggle');
 						$('#label-process').html('Processing: ' + fileName);
+						fileName = currentDir + fileName;
 						
-						$.post('/rbackup', {currentdir: currentDir, filename: fileName, dbname: dbName},
+						$.post('/rbackup', {filename: fileName, dbname: dbName},
 								function(response,status) {
 			                    	$('#processing-modal').modal('hide');
 			                        		                        
