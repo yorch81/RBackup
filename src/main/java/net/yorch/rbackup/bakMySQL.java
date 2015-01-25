@@ -101,11 +101,10 @@ public class bakMySQL extends Backup {
 					stmt = this.conn.createStatement();
 					stmt.execute("FLUSH TABLES WITH READ LOCK;");
 					
-					execute(command.toString());
-					
-					if (! this.fileExists(filename))
-						retValue = 3;
-					
+					if (execute(command.toString()) != 0){
+						retValue = 2;
+					}
+											
 					stmt.execute("UNLOCK TABLES;");
 				} catch (SQLException e) {
 					retValue = 3;
@@ -147,13 +146,19 @@ public class bakMySQL extends Backup {
 	 * Execute OS Command
 	 * 
 	 * @param command MySQL Backup Command
+	 * @return int status
 	 */
-	private void execute(String command){
+	private int execute(String command){
+		int status = 1;
+		
 		try {
-			Runtime.getRuntime().exec(command).waitFor();
+			Process mysqldumpProc = Runtime.getRuntime().exec(command);
+			status = mysqldumpProc.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return status;
 	}
 	
 	/**
