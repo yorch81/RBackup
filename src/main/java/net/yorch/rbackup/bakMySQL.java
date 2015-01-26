@@ -83,17 +83,7 @@ public class bakMySQL extends Backup {
 		
 		if (this.fileExists(filename))
 			retValue = 1;
-		else{
-			StringBuffer command = new StringBuffer(this.getMySQLDump());
-			command.append(" --routines --add-drop-table --add-drop-database -u ");
-			command.append(this.mysqlUser);
-			command.append(" -p");
-			command.append(this.mysqlPassword);
-			command.append(" ");
-			command.append(database);
-			command.append(" > ");
-			command.append(filename);
-			
+		else{			
 			Statement stmt = null;
 	        
 			if (this.isConnected()){
@@ -101,7 +91,7 @@ public class bakMySQL extends Backup {
 					stmt = this.conn.createStatement();
 					stmt.execute("FLUSH TABLES WITH READ LOCK;");
 					
-					if (execute(command.toString()) != 0){
+					if (executeMySQLDump(filename, database) != 0){
 						retValue = 2;
 					}
 											
@@ -141,37 +131,45 @@ public class bakMySQL extends Backup {
 		
 		return rs;
 	}
-
+	 
 	/**
-	 * Execute OS Command
+	 * Execute MySQL Dump Command
 	 * 
-	 * @param command MySQL Backup Command
-	 * @return int status
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @return int 
 	 */
-	private int execute(String command){
+	private int executeMySQLDump(String filename, String database){
+		StringBuffer command = new StringBuffer("mysqldump");
+		
+		if (System.getProperty("os.name").contains("Windows"))
+			command.append(".exe");
+			
+		command.append(" --routines --add-drop-table --add-drop-database -u ");
+		command.append(this.mysqlUser);
+		command.append(" -p");
+		command.append(this.mysqlPassword);
+		command.append(" ");
+		command.append(database);
+		command.append(" > ");
+		command.append(filename);
+		
+		String[] aCommand; 
+		
+		if (System.getProperty("os.name").contains("Windows"))
+			aCommand = new String[]{"cmd.exe","/c",command.toString()};
+		else
+			aCommand = new String[]{"/bin/bash","-c",command.toString()};
+		
 		int status = 1;
 		
 		try {
-			Process mysqldumpProc = Runtime.getRuntime().exec(command);
+			Process mysqldumpProc = Runtime.getRuntime().exec(aCommand);
 			status = mysqldumpProc.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return status;
-	}
-	
-	/**
-	 * Get MySQL Dump Executable File
-	 * 
-	 * @return mysqldump Executable File
-	 */
-	private String getMySQLDump(){
-		String retValue = "mysqldump";
-		
-		if (System.getProperty("os.name").contains("Windows"))
-			retValue = "cmd.exe /c mysqldump.exe";
-		
-		return retValue;
 	}
 }
