@@ -75,11 +75,12 @@
 		<script src="./jQueryFileTree-master/jqueryFileTree.js" type="text/javascript"></script>
 		<link href="./jQueryFileTree-master/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 		
-		<!--
-		<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
-		-->
+		<#if theme == 1>
+			<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
+		<#else>
+			<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
+		</#if>
 		
-		<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
 		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
     
 		<script type="text/javascript">	

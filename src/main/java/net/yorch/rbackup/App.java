@@ -65,17 +65,25 @@ public class App {
 			else
 				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname);
 			
-			rbackup.restore("C:/TEMP/Backups/mydb.bak", "mydb3", mdfdir, ldfdir);
+			//rbackup.restore("C:/TEMP/Backups/mydb.bak", "mydb3", mdfdir, ldfdir);
 			
-			if (WebApp.basedirExists(basedir)){
+			if (! WebApp.dirExists(basedir)){
+				System.out.println("Directory Base not Exists");
+			}
+			else if(! WebApp.dirExists(mdfdir)){
+				System.out.println("MDF Directory not Exists");
+			}
+			else if(! WebApp.dirExists(ldfdir)){
+				System.out.println("LDF Directory not Exists");
+			}
+			else{
 				if (rbackup.isConnected()){
 					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir);
 				}
 				else
 					System.out.println("Could not connect to DataBase Server");
 			}
-			else
-				System.out.println("Directory Base not Exists");			
+							
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

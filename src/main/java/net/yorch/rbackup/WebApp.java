@@ -48,6 +48,12 @@ import spark.Spark;
  */
 public class WebApp {
 	/**
+	 * Themes
+	 */
+	public static final int BOOTSTRAP=1;
+    public static final int METRO=2;
+    
+	/**
      * Application User
      *
      * VAR String appUser Application User
@@ -190,6 +196,7 @@ public class WebApp {
 	 */
 	private StringWriter getLoginTemplate(String loginError) {
 		Map<String, Object> tempData = new HashMap<String, Object>();
+		tempData.put("theme", WebApp.BOOTSTRAP);
 		tempData.put("loginError", loginError);
 		
 		FMTemplate loginTemp = new FMTemplate("login.ftl", tempData);
@@ -211,6 +218,7 @@ public class WebApp {
 		Map<String, Object> tempData = new HashMap<String, Object>();
 		String listDb = dbAsOption(rbackup.dbList());
 		
+		tempData.put("theme", WebApp.BOOTSTRAP);
 		tempData.put("listDb", listDb);
 		tempData.put("baseDir", this.basedir);
 		
@@ -279,13 +287,13 @@ public class WebApp {
 	}
 		
 	/**
-	 * Check if Directory Base exists
+	 * Check if Directory exists
 	 * 
-	 * @param basedir String Directory Base
+	 * @param dir String Directory
 	 * @return boolean
 	 */
-	public static boolean basedirExists(String basedir){
-		File dirFile = new File(basedir);
+	public static boolean dirExists(String dir){
+		File dirFile = new File(dir);
 	
 		return dirFile.exists();
 	}
