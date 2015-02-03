@@ -50,6 +50,8 @@ public class App {
 			String dbname = config.getProperty("dbname");
 			String port = config.getProperty("port");
 			String basedir = config.getProperty("basedir");
+			String mdfdir = config.getProperty("mdfdir");
+			String ldfdir = config.getProperty("ldfdir");
 			String appUser = config.getProperty("appuser");
 			String appPassword = config.getProperty("apppassword");
 			
@@ -62,6 +64,8 @@ public class App {
 				rbackup = new RBackup(RBackup.MSSQLSERVER, hostname, user, password, dbname);
 			else
 				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname);
+			
+			rbackup.restore("C:/TEMP/Backups/mydb.bak", "mydb3", mdfdir, ldfdir);
 			
 			if (WebApp.basedirExists(basedir)){
 				if (rbackup.isConnected()){

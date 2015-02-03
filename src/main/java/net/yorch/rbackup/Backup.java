@@ -61,7 +61,7 @@ public abstract class Backup {
 	}
 	
 	/**
-	 * Execute backup in SQL Server
+	 * Execute Backup
 	 * 
 	 * @param filename String Filename of Backup
 	 * @param database String DataBase name
@@ -75,4 +75,15 @@ public abstract class Backup {
 	 * @return ResultSet
 	 */
 	public abstract ResultSet dbList ();
+	
+	/**
+	 * Execute Restore
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @param mdfDir String MDF Files Directory
+	 * @param ldfDir String LDF Files Directory
+	 * @return int 0 successful 1 File Exists 2 Not Connected 3 SQL Exception
+	 */
+	public abstract int restore (String filename, String database, String mdfDir, String ldfDir);
 }

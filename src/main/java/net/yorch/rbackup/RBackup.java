@@ -60,7 +60,7 @@ public class RBackup {
 	}	
 
 	/**
-	 * Execute backup in SQL Server
+	 * Execute backup in DataBase Server
 	 * 
 	 * @param filename String Filename of Backup
 	 * @param database String DataBase name
@@ -86,5 +86,18 @@ public class RBackup {
 	 */	
 	public boolean isConnected() {
 		return backup.isConnected();
+	}
+	
+	/**
+	 * Execute Restore in DataBase Server
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @param mdfDir String MDF Files Directory
+	 * @param ldfDir String LDF Files Directory
+	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 SQL Exception
+	 */
+	public int restore(String filename, String database, String mdfDir, String ldfDir) {
+		return backup.restore(filename, database, mdfDir, ldfDir);
 	}
 }

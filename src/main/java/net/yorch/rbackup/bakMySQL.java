@@ -172,4 +172,86 @@ public class bakMySQL extends Backup {
 		
 		return status;
 	}
+
+	/**
+	 * Execute Restore MySQL
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @param mdfDir String No uses
+	 * @param ldfDir String No uses
+	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 SQL Exception
+	 */
+	@Override
+	public int restore(String filename, String database, String mdfDir, String ldfDir) {
+		int retValue = 0;
+		
+		if (! this.fileExists(filename))
+			retValue = 1;
+		else{			
+			Statement stmt = null;
+	        
+			if (this.isConnected()){
+				try {
+					stmt = this.conn.createStatement();
+					stmt.execute("CREATE SCHEMA IF NOT EXISTS " + database + ";");
+					stmt.execute("SET FOREIGN_KEY_CHECKS=0;");
+									
+					if (executeMySQLRestore(filename, database) != 0){
+						retValue = 2;
+					}
+											
+					stmt.execute("SET FOREIGN_KEY_CHECKS=1;;");
+				} catch (SQLException e) {
+					retValue = 3;
+					e.printStackTrace();
+				}
+			}
+			else
+				retValue = 2;
+		}
+		
+		return retValue;
+	}
+	
+	/**
+	 * Execute MySQL Restore Command
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @return int 
+	 */
+	private int executeMySQLRestore(String filename, String database){
+		StringBuffer command = new StringBuffer("mysql");
+		
+		if (System.getProperty("os.name").contains("Windows"))
+			command.append(".exe");
+			
+		command.append(" -u ");
+		command.append(this.mysqlUser);
+		command.append(" -p");
+		command.append(this.mysqlPassword);
+		command.append(" ");
+		command.append(database);
+		command.append(" < ");
+		command.append(filename);
+		
+		String[] aCommand; 
+		
+		if (System.getProperty("os.name").contains("Windows"))
+			aCommand = new String[]{"cmd.exe","/c",command.toString()};
+		else
+			aCommand = new String[]{"/bin/bash","-c",command.toString()};
+		
+		int status = 1;
+		
+		try {
+			Process mysqldumpProc = Runtime.getRuntime().exec(aCommand);
+			status = mysqldumpProc.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return status;
+	}
 }

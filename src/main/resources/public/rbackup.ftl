@@ -8,7 +8,7 @@
 		<meta name="author" content="Jorge Alberto Ponce Turrubiates">
 		
     	<link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico">
-    	
+
 		<style type="text/css">
 			.body {
 			 	min-height: 2000px;
@@ -71,12 +71,17 @@
 		</style>
 		
 		<script src="./js/jquery-1.9.1.js" type="text/javascript"></script>		
+    	
 		<script src="./jQueryFileTree-master/jqueryFileTree.js" type="text/javascript"></script>
 		<link href="./jQueryFileTree-master/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 		
+		<!--
 		<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
-		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
+		-->
 		
+		<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
+		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
+    
 		<script type="text/javascript">	
 			/**
 			 * Execute Remote Backup

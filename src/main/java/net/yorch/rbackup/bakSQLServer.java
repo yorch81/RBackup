@@ -120,4 +120,68 @@ public class bakSQLServer extends Backup {
 		return rs;
 	}
 
+	/**
+	 * Execute Restore SQL Server
+	 * 
+	 * @param filename String Filename of Backup
+	 * @param database String DataBase name
+	 * @param mdfDir String MDF Files Directory
+	 * @param ldfDir String LDF Files Directory
+	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 SQL Exception
+	 */
+	@Override
+	public int restore(String filename, String database, String mdfDir, String ldfDir) {
+		int retValue = 0;
+		
+		if (! this.fileExists(filename))
+			retValue = 1;
+		else{					
+			Statement stmt = null;
+	        
+			if (this.isConnected()){
+				try {
+					StringBuffer query = new StringBuffer("RESTORE DATABASE ");
+					query.append(database);
+					query.append(" FROM  DISK = N'");
+					query.append(filename);
+					query.append("' WITH  FILE = 1,");
+					
+					// Gets Logical Names
+					String command = "RESTORE FILELISTONLY FROM DISK = N'" + filename + "'";
+					stmt = this.conn.createStatement();
+					ResultSet rs = stmt.executeQuery(command);
+					
+					while(rs.next()){
+						query.append(" MOVE N'");
+						query.append(rs.getString("LogicalName"));
+						query.append("' TO N'");
+						
+						if (rs.getString("Type").equals("D")){
+							query.append(mdfDir);
+							query.append(database);
+							query.append(".mdf',");
+						}
+						else{
+							query.append(ldfDir);
+							query.append(database);
+							query.append(".ldf',");
+						}
+					}
+					
+					command = query.toString().replace("/", "\\") + " NOUNLOAD,  REPLACE,  STATS = 10";
+					
+					stmt = this.conn.createStatement();
+					stmt.execute(command);
+				} catch (SQLException e) {
+					retValue = 3;
+					e.printStackTrace();
+				}
+			}
+			else
+				retValue = 2;
+		}
+		
+		return retValue;
+	}
+
 }
