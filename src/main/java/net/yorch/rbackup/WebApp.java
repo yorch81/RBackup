@@ -46,13 +46,7 @@ import spark.Spark;
  * @version    1.0.0, 2015-14-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
-public class WebApp {
-	/**
-	 * Themes
-	 */
-	public static final int BOOTSTRAP=1;
-    public static final int METRO=2;
-    
+public class WebApp {    
 	/**
      * Application User
      *
@@ -70,6 +64,22 @@ public class WebApp {
 	private String appPassword = "";
 
 	/**
+     * MDF Directory
+     *
+     * VAR String mdfdir MDF Directory
+     * @access private
+     */
+	private String mdfdir = "";
+	
+	/**
+     * LDF Directory
+     *
+     * VAR String ldfdir LDF Directory
+     * @access private
+     */
+	private String ldfdir = "";
+	
+	/**
      * Directory Base
      *
      * VAR String basedir Directory Base
@@ -85,12 +95,16 @@ public class WebApp {
 	 * @param user String Application User
 	 * @param password String Application User Password
 	 * @param basedir String Directory Base
+	 * @param mdf String MDF Directory
+	 * @param ldf String LDF Directory
 	 * @see WebApp
 	 */
-	public WebApp(RBackup rbackup, int port, String user, String password, String basedir) {
+	public WebApp(RBackup rbackup, int port, String user, String password, String basedir, String mdf, String ldf) {
 		this.appUser = user;
 		this.appPassword = password;
 		this.basedir = basedir;
+		this.mdfdir = mdf;
+		this.ldfdir = ldf;
 		
 		/**
 	     * Port Applicacion
@@ -160,7 +174,23 @@ public class WebApp {
 	    });
 		
 		/**
-	     * Valida Usuario y Password
+	     * Path /restore
+	     * Execute Restore DataBase
+	     */
+		post("/restore", new Route() {
+	        @Override
+	        public Object handle(Request request, Response response) {	 
+	        	String fileName = request.queryParams("filename");
+	        	String dbName = request.queryParams("dbname");
+	        	     	
+	    		int result = rbackup.restore(fileName, dbName, mdfdir, ldfdir);
+	    			        	
+	        	return String.valueOf(result);
+	        }
+	    });
+		
+		/**
+	     * Login User
 	     */
 	    post("/webauth", new Route() {
 	        @Override
@@ -196,7 +226,6 @@ public class WebApp {
 	 */
 	private StringWriter getLoginTemplate(String loginError) {
 		Map<String, Object> tempData = new HashMap<String, Object>();
-		tempData.put("theme", WebApp.BOOTSTRAP);
 		tempData.put("loginError", loginError);
 		
 		FMTemplate loginTemp = new FMTemplate("login.ftl", tempData);
@@ -218,7 +247,6 @@ public class WebApp {
 		Map<String, Object> tempData = new HashMap<String, Object>();
 		String listDb = dbAsOption(rbackup.dbList());
 		
-		tempData.put("theme", WebApp.BOOTSTRAP);
 		tempData.put("listDb", listDb);
 		tempData.put("baseDir", this.basedir);
 		

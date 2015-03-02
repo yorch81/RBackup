@@ -19,12 +19,12 @@
 			}
 
 			.navbar {
-				min-height:124px;
+				min-height:110px;
 			}
 
 			.bsnavbar {
 			  	margin-bottom: 19px;
-				min-height:124px;
+				min-height:110px;
 			}
 			
 			.example {
@@ -75,11 +75,7 @@
 		<script src="./jQueryFileTree-master/jqueryFileTree.js" type="text/javascript"></script>
 		<link href="./jQueryFileTree-master/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 		
-		<#if theme == 1>
-			<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
-		<#else>
-			<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
-		</#if>
+		<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
 		
 		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
     
@@ -174,27 +170,86 @@
 			                );
 					}
 				}
+
+				/**
+				 * Execute Restore
+				 * @return void
+				 */
+				this.restore= function(){	
+					if ($('#txtDbRestore').val() == ""){
+						alert("Must type DataBase to Restore");
+						$('#txtDbRestore').focus();
+					}
+					else{
+						$('#processing-restore').modal('hide');
+						$('#processing-modal').modal('toggle');
+						$('#label-process').html('Restoring: ' + $('#txtDbRestore').val());
+						fileName = currentDir + fileName;
+						
+						$.post('/restore', {filename: fileName, dbname: $('#txtDbRestore').val()},
+								function(response,status) {
+			                    	$('#processing-modal').modal('hide');
+			                        		                        
+			                        if (response == '1') {
+			                        	alert("File Not Exists");
+			                        } else if (response == '2') {
+			                        	alert("Not Connected to SQL Server");
+			                        } else if (response == '3') {
+			                        	alert("DataBase Server Exception");
+			                        }
+				                        
+			                        location.reload(true)
+			                }).error(
+			                    function(){
+			                        console.log('Application not responding');
+			                    }
+			                );
+					}
+				}
 			}
 		
+			// Init JQuery
 			$(document).ready( function() {				
 				var rbackup =  new RBackup();
 				
 				$('#explorer').fileTree({ root: './', script: '/getfiles', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) { 
+
+					// Gets File Name
 					file = file.substring(2);
+					var files = file.split("/");
+					var arrLen = files.length - 1;
+					file = files[arrLen];
+
+					$('#txtFile').val(file);
+					$('#btn_backup').html("Restore");
 				});
 			
 				$('#explorer').on('filetreeexpand', 
 			    		function (e, data){
 							$('#txtPath').val(data.rel);
+							$('#btn_backup').html("Backup");
+							$('#txtFile').val("");
 			    });
 				
 				$("#btn_backup").click(function(){
+					if ($('#btn_backup').html() == "Backup"){
+						rbackup.setCurrentDir($('#txtPath').val());
+		    			rbackup.setFileName($('#txtFile').val());
+		    			rbackup.setDbName($('#cmbDb').val());
+		    			
+						rbackup.backup();
+					}
+					else{
+						$('#processing-restore').modal('toggle');
+					}
+			    });
+
+			    $("#btn_restore").click(function(){
 					rbackup.setCurrentDir($('#txtPath').val());
 	    			rbackup.setFileName($('#txtFile').val());
-	    			rbackup.setDbName($('#cmbDb').val());
 	    			
-					rbackup.backup();
-			     });
+					rbackup.restore();
+			    });
 			});
 		</script>
 
@@ -204,7 +259,7 @@
 		<div class="navbar navbar-default navbar-static-top bsnavbar">
 	      <div class="container">
 	      	<div class="navbar-header">
-	          <h1>RBackup</h1>
+	          <h1>RBackup</h1><h5>with Restore</h5>
 	    	</div>
 	      </div>
 	    </div>
@@ -227,7 +282,26 @@
 			</div>
 		</div>
 		
-		<!-- Static Modal -->
+		<!-- Static Modal Restore Data -->
+		<div class="modal fade" id="processing-restore" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		        	<div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title">Restore DataBase</h4>
+				     </div>
+
+				    <div class="modal-body">
+				    	<label for="txtDbRestore">DataBase:</label>
+		        		<input id="txtDbRestore" type="text" class="form-control" placeholder="DataBase Restore" name="txtDbRestore" required>
+
+						<button id="btn_restore" class="btn btn-lg btn-primary btn-block">Restore</button>
+				    </div>
+		        </div>
+		    </div>
+		</div>
+
+		<!-- Static Modal Processing -->
 		<div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
 		        <div class="modal-content">
@@ -241,6 +315,5 @@
 		        </div>
 		    </div>
 		</div>
-
 	</body>
 </html>

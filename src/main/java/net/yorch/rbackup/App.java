@@ -64,9 +64,7 @@ public class App {
 				rbackup = new RBackup(RBackup.MSSQLSERVER, hostname, user, password, dbname);
 			else
 				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname);
-			
-			//rbackup.restore("C:/TEMP/Backups/mydb.bak", "mydb3", mdfdir, ldfdir);
-			
+						
 			if (! WebApp.dirExists(basedir)){
 				System.out.println("Directory Base not Exists");
 			}
@@ -78,7 +76,7 @@ public class App {
 			}
 			else{
 				if (rbackup.isConnected()){
-					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir);
+					new WebApp(rbackup, Integer.parseInt(port), appUser, appPassword, basedir, mdfdir, ldfdir);
 				}
 				else
 					System.out.println("Could not connect to DataBase Server");
