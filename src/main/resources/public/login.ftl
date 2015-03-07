@@ -12,9 +12,8 @@
 	
 	<script src="./js/jquery-1.9.1.js" type="text/javascript"></script>
 
-	<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
-	
-	<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
+	<script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
     	
 	<style type="text/css">
 		body {

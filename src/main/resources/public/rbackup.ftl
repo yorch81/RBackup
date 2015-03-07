@@ -76,9 +76,8 @@
 		<script src="./jQueryFileTree-master/jqueryFileTree.js" type="text/javascript"></script>
 		<link href="./jQueryFileTree-master/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 		
-		<link rel="stylesheet" href="./bootstrap-3.3.1-dist/dist/css/bootstrap.min.css" />
-		
-		<script src="./bootstrap-3.3.1-dist/dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
+		<script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
     
 		<script type="text/javascript">	
 			/**
@@ -288,7 +287,7 @@
 				<div id="explorer" class="file_explorer"></div>
 				
 				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
-			</div>
+			</div>	        
 		</div>
 		
 		<!-- Static Modal Restore Data -->
