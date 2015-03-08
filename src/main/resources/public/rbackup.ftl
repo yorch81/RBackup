@@ -78,7 +78,7 @@
 		
 		<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
 		<script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-    
+    	
 		<script type="text/javascript">	
 			/**
 			 * Execute Remote Backup
@@ -302,7 +302,7 @@
 				    <div class="modal-body">
 				    	<label for="txtDbRestore">DataBase:</label>
 		        		<input id="txtDbRestore" type="text" class="form-control" placeholder="DataBase Restore" name="txtDbRestore" required>
-
+						<br>
 						<button id="btn_restore" class="btn btn-lg btn-primary btn-block">Restore</button>
 				    </div>
 		        </div>
