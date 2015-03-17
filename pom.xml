@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>RBackup</name>
-  <description>Web Application to Backup SQL Server DataBases</description>
+  <description>Web Application to Backup and Restore SQL Server and MySQL DataBases</description>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -47,7 +47,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>net.yorch.rbackup.App</mainClass>
+              <mainClass>net.yorch.rbackup.RBackupApp</mainClass>
             </manifest>
           </archive>
         </configuration>

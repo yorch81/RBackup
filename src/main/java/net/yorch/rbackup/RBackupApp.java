@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * App
+ * RBackupApp
  * 
  * Application Class
  * 
@@ -24,15 +24,21 @@ import java.util.Properties;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   App
+ * @category   RBackupApp
  * @package    net.yorch.rbackup
  * @copyright  Copyright 2015 JAPT
  * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-12-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
-public class App {
-	public static void main( String[] args ){
+public class RBackupApp {
+
+	/**
+	 * Main Method
+	 * 
+	 * @param args String Properties File Name
+	 */
+	public static void main(String[] args) {
 		Properties config = new Properties();
 		
 		try {
@@ -88,4 +94,5 @@ public class App {
 			e.printStackTrace();
 		}
 	}
+
 }
