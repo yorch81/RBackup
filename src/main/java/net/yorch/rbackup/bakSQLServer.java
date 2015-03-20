@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * bakSQLServer
+ * bakSQLServer<br>
  * 
- * Implementation of SQL Server Backups
+ * Implementation of SQL Server Backups<br><br>
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -24,10 +24,6 @@ import java.sql.Statement;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   bakSQLServer
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-20-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
@@ -39,8 +35,6 @@ public class bakSQLServer extends Backup {
 	 * @param username String DataBase User
 	 * @param password String User Password
 	 * @param dbname String DataBase Name
-	 * @param basedir String Directory Base
-	 * @return Instance 
 	 */
 	public bakSQLServer(String hostname, String username, String password, String dbname) {
 		String selectMethod = "Direct";

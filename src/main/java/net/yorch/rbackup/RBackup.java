@@ -3,9 +3,9 @@ package net.yorch.rbackup;
 import java.sql.ResultSet;
 
 /**
- * RBackup
+ * RBackup<br>
  * 
- * RBackup Application
+ * RBackup Application<br><br>
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -21,10 +21,6 @@ import java.sql.ResultSet;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   RBackup
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-12-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
@@ -48,8 +44,6 @@ public class RBackup {
 	 * @param username String DataBase User
 	 * @param password String User Password
 	 * @param dbname String DataBase Name
-	 * @param basedir String Directory Base
-	 * @return Instance 
 	 * @see RBackup
 	 */
 	public RBackup(int type, String hostname, String username, String password, String dbname) {

@@ -21,9 +21,9 @@ import spark.Route;
 import spark.Spark;
 
 /**
- * WebApp
+ * WebApp<br>
  * 
- * Web Application
+ * Web Application<br><br>
  *
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -39,10 +39,6 @@ import spark.Spark;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   WebApp
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-14-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */

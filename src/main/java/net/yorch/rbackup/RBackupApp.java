@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * RBackupApp
+ * RBackupApp<br>
  * 
- * Application Class
+ * Application Class<br><br>
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -24,10 +24,6 @@ import java.util.Properties;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   RBackupApp
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-12-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */

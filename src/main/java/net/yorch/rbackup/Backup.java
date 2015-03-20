@@ -5,9 +5,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
- * Backup
+ * Backup<br>
  * 
- * Abstract Class to Generate Backup
+ * Abstract Class to Generate Backup<br><br>
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -23,10 +23,6 @@ import java.sql.ResultSet;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   Backup
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-20-01
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
@@ -35,7 +31,6 @@ public abstract class Backup {
      * Connection DB Handler
      *
      * VAR Connection conn DB Connection
-     * @access protected
      */
 	protected Connection conn = null;
 	

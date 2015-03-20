@@ -9,9 +9,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * FMTemplate
+ * FMTemplate<br>
  * 
- * Manage FreeMarker Template
+ * Manage FreeMarker Template<br><br>
  * 
  * Copyright 2015 Jorge Alberto Ponce Turrubiates
  *
@@ -27,10 +27,6 @@ import freemarker.template.TemplateException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @category   FMTemplate
- * @package    net.yorch.rbackup
- * @copyright  Copyright 2015 JAPT
- * @license    http://www.apache.org/licenses/LICENSE-2.0
  * @version    1.0.0, 2015-01-15
  * @author     <a href="mailto:the.yorch@gmail.com">Jorge Alberto Ponce Turrubiates</a>
  */
@@ -53,8 +49,7 @@ public class FMTemplate {
      * Constructor of Class
      * 
      * @param templateName String Path and Name of Template
-     * @param templateData Map<String, Object> List of Data in Template
-     * @return Instance
+     * @param templateData Map List of Data in Template
      * @see FMTemplate
      */
 	public FMTemplate(String templateName, Map<String, Object> templateData) {
