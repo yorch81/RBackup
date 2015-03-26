@@ -174,7 +174,7 @@ public class bakMySQL extends Backup {
 	 * @param database String DataBase name
 	 * @param mdfDir String No uses
 	 * @param ldfDir String No uses
-	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 SQL Exception
+	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 Database already exists 4 SQL Exception
 	 */
 	@Override
 	public int restore(String filename, String database, String mdfDir, String ldfDir) {
@@ -186,20 +186,25 @@ public class bakMySQL extends Backup {
 			Statement stmt = null;
 	        
 			if (this.isConnected()){
-				try {
-					stmt = this.conn.createStatement();
-					stmt.execute("CREATE SCHEMA IF NOT EXISTS " + database + ";");
-					stmt.execute("SET FOREIGN_KEY_CHECKS=0;");
-									
-					if (executeMySQLRestore(filename, database) != 0){
-						retValue = 2;
-					}
-											
-					stmt.execute("SET FOREIGN_KEY_CHECKS=1;;");
-				} catch (SQLException e) {
+				if (dbExists(database)) {
 					retValue = 3;
-					e.printStackTrace();
 				}
+				else {
+					try {
+						stmt = this.conn.createStatement();
+						stmt.execute("CREATE SCHEMA IF NOT EXISTS " + database + ";");
+						stmt.execute("SET FOREIGN_KEY_CHECKS=0;");
+										
+						if (executeMySQLRestore(filename, database) != 0){
+							retValue = 2;
+						}
+												
+						stmt.execute("SET FOREIGN_KEY_CHECKS=1;;");
+					} catch (SQLException e) {
+						retValue = 4;
+						e.printStackTrace();
+					}
+				}	
 			}
 			else
 				retValue = 2;
@@ -247,5 +252,36 @@ public class bakMySQL extends Backup {
 		}
 		
 		return status;
+	}
+	
+	/**
+	 * Checks if Database Exists
+	 * 
+	 * @param dbName String Database Name
+	 * @return boolean
+	 */
+	private boolean dbExists(String dbName) {
+		boolean retValue = false;
+		
+		Statement stmt = null;
+        String query = "SELECT COUNT(*) AS TOTAL FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + dbName + "'";
+        ResultSet rs = null;
+        
+		if (this.isConnected()){
+			try {
+				stmt = this.conn.createStatement();
+				rs = stmt.executeQuery(query);
+				
+				rs.first();
+				
+				if (rs.getInt("TOTAL") > 0)
+					retValue = true;
+			} catch (SQLException e) {
+				rs = null;
+				e.printStackTrace();
+			}
+		}
+		
+		return retValue;
 	}
 }

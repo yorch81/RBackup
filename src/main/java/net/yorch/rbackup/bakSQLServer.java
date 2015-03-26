@@ -121,7 +121,7 @@ public class bakSQLServer extends Backup {
 	 * @param database String DataBase name
 	 * @param mdfDir String MDF Files Directory
 	 * @param ldfDir String LDF Files Directory
-	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 SQL Exception
+	 * @return int 0 successful 1 File Not Exists 2 Not Connected 3 Database already exists 4 SQL Exception
 	 */
 	@Override
 	public int restore(String filename, String database, String mdfDir, String ldfDir) {
@@ -133,42 +133,47 @@ public class bakSQLServer extends Backup {
 			Statement stmt = null;
 	        
 			if (this.isConnected()){
-				try {
-					StringBuffer query = new StringBuffer("RESTORE DATABASE ");
-					query.append(database);
-					query.append(" FROM  DISK = N'");
-					query.append(filename);
-					query.append("' WITH  FILE = 1,");
-					
-					// Gets Logical Names
-					String command = "RESTORE FILELISTONLY FROM DISK = N'" + filename + "'";
-					stmt = this.conn.createStatement();
-					ResultSet rs = stmt.executeQuery(command);
-					
-					while(rs.next()){
-						query.append(" MOVE N'");
-						query.append(rs.getString("LogicalName"));
-						query.append("' TO N'");
-						
-						if (rs.getString("Type").equals("D")){
-							query.append(mdfDir);
-							query.append(database);
-							query.append(".mdf',");
-						}
-						else{
-							query.append(ldfDir);
-							query.append(database);
-							query.append(".ldf',");
-						}
-					}
-					
-					command = query.toString().replace("/", "\\") + " NOUNLOAD,  REPLACE,  STATS = 10";
-					
-					stmt = this.conn.createStatement();
-					stmt.execute(command);
-				} catch (SQLException e) {
+				if (dbExists(database)) {
 					retValue = 3;
-					e.printStackTrace();
+				}
+				else {
+					try {
+						StringBuffer query = new StringBuffer("RESTORE DATABASE ");
+						query.append(database);
+						query.append(" FROM  DISK = N'");
+						query.append(filename);
+						query.append("' WITH  FILE = 1,");
+						
+						// Gets Logical Names
+						String command = "RESTORE FILELISTONLY FROM DISK = N'" + filename + "'";
+						stmt = this.conn.createStatement();
+						ResultSet rs = stmt.executeQuery(command);
+						
+						while(rs.next()){
+							query.append(" MOVE N'");
+							query.append(rs.getString("LogicalName"));
+							query.append("' TO N'");
+							
+							if (rs.getString("Type").equals("D")){
+								query.append(mdfDir);
+								query.append(database);
+								query.append(".mdf',");
+							}
+							else{
+								query.append(ldfDir);
+								query.append(database);
+								query.append(".ldf',");
+							}
+						}
+						
+						command = query.toString().replace("/", "\\") + " NOUNLOAD,  REPLACE,  STATS = 10";
+						
+						stmt = this.conn.createStatement();
+						stmt.execute(command);
+					} catch (SQLException e) {
+						retValue = 4;
+						e.printStackTrace();
+					}
 				}
 			}
 			else
@@ -178,4 +183,35 @@ public class bakSQLServer extends Backup {
 		return retValue;
 	}
 
+	/**
+	 * Checks if Database Exists
+	 * 
+	 * @param dbName String Database Name
+	 * @return boolean
+	 */
+	private boolean dbExists(String dbName) {
+		boolean retValue = false;
+		
+		Statement stmt = null;
+        String query = "SELECT COUNT(*) AS TOTAL FROM master..sysdatabases sdb WHERE sdb.name = '" + dbName + "'";
+        ResultSet rs = null;
+        
+		if (this.isConnected()){
+			try {
+				stmt = this.conn.createStatement();
+				rs = stmt.executeQuery(query);
+				
+				rs.first();
+				
+				if (rs.getInt("TOTAL") > 0)
+					retValue = true;
+			} catch (SQLException e) {
+				rs = null;
+				e.printStackTrace();
+			}
+		}
+		
+		return retValue;
+	
+	}
 }

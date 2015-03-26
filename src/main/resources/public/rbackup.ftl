@@ -195,6 +195,8 @@
 			                        } else if (response == '2') {
 			                        	alert("Not Connected to SQL Server");
 			                        } else if (response == '3') {
+			                        	alert("DataBase Already Exists");
+			                        } else if (response == '4') {
 			                        	alert("DataBase Server Exception");
 			                        }
 				                        
