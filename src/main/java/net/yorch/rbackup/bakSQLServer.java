@@ -198,7 +198,7 @@ public class bakSQLServer extends Backup {
         
 		if (this.isConnected()){
 			try {
-				stmt = this.conn.createStatement();
+				stmt = this.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				rs = stmt.executeQuery(query);
 				
 				rs.first();
