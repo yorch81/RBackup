@@ -78,7 +78,8 @@
 		
 		<link rel="stylesheet" href="./metro-bootstrap-master/dist/css/metro-bootstrap.min.css" />
 		<script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-    	
+    	<script src="./js/bootbox.js"></script>
+
 		<script type="text/javascript">	
 			/**
 			 * Execute Remote Backup
@@ -142,7 +143,7 @@
 				 */
 				this.backup = function(){	
 					if (fileName == ""){
-						alert("Must type Backup File Name");
+						bootbox.alert("Must type Backup File Name");
 						$('#txtFile').focus();
 					}
 					else{
@@ -153,16 +154,12 @@
 						$.post('/rbackup', {filename: fileName, dbname: dbName},
 								function(response,status) {
 			                    	$('#processing-modal').modal('hide');
-			                        		                        
-			                        if (response == '1') {
-			                        	alert("File Already Exists");
-			                        } else if (response == '2') {
-			                        	alert("Not Connected to SQL Server");
-			                        } else if (response == '3') {
-			                        	alert("DataBase Server Exception");
+			                        
+			                        if (response.length > 0) {
+			                        	bootbox.alert(response);
 			                        }
-				                        
-			                        location.reload(true)
+			                        else
+			                        	location.reload(true);
 			                }).error(
 			                    function(){
 			                        console.log('Application not responding');
@@ -177,7 +174,7 @@
 				 */
 				this.restore= function(){	
 					if ($('#txtDbRestore').val() == ""){
-						alert("Must type DataBase to Restore");
+						bootbox.alert("Must type DataBase to Restore");
 						$('#txtDbRestore').focus();
 					}
 					else{
@@ -189,18 +186,12 @@
 						$.post('/restore', {filename: fileName, dbname: $('#txtDbRestore').val()},
 								function(response,status) {
 			                    	$('#processing-modal').modal('hide');
-			                        		                        
-			                        if (response == '1') {
-			                        	alert("File Not Exists");
-			                        } else if (response == '2') {
-			                        	alert("Not Connected to SQL Server");
-			                        } else if (response == '3') {
-			                        	alert("DataBase Already Exists");
-			                        } else if (response == '4') {
-			                        	alert("DataBase Server Exception");
+
+			                    	if (response.length > 0) {
+			                        	bootbox.alert(response);
 			                        }
-				                        
-			                        location.reload(true)
+			                        else
+			                        	location.reload(true);
 			                }).error(
 			                    function(){
 			                        console.log('Application not responding');

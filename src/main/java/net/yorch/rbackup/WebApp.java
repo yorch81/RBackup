@@ -164,8 +164,13 @@ public class WebApp {
 	        	String dbName = request.queryParams("dbname");
 	        	     	
 	    		int result = rbackup.backup(fileName, dbName);
-	    			        	
-	        	return String.valueOf(result);
+	    			        
+	    		if (result == 0) 
+	    			response.status(200);
+	    		else 
+	    			response.status(206);
+	    		
+	    		return backupMsg(result);
 	        }
 	    });
 		
@@ -180,8 +185,13 @@ public class WebApp {
 	        	String dbName = request.queryParams("dbname");
 	        	     	
 	    		int result = rbackup.restore(fileName, dbName, mdfdir, ldfdir);
-	    			        	
-	        	return String.valueOf(result);
+	    		
+	    		if (result == 0) 
+	    			response.status(200);
+	    		else 
+	    			response.status(206);
+	    		
+	    		return restoreMsg(result);
 	        }
 	    });
 		
@@ -384,6 +394,48 @@ public class WebApp {
 	    }
 	    
 		return fs.toString();
+	}
+	
+	/**
+	 * Gets Backup Error Message
+	 * 
+	 * @param type int Error Type
+	 * @return String
+	 */
+	private String backupMsg(int type) {
+		String retValue = "";
+		
+		if (type == 1) {
+			retValue = "File Already Exists";
+		} else if (type == 2) {
+			retValue = "Not Connected to Server";
+        } else if (type == 3) {
+        	retValue = "DataBase Server Exception";
+        }
+		
+		return retValue;
+	}
+	
+	/**
+	 * Gets Backup Error Message
+	 * 
+	 * @param type int Error Type
+	 * @return String
+	 */
+	private String restoreMsg(int type) {
+		String retValue = "";
+		
+		if (type == 1) {
+			retValue = "File Not Exists";
+		} else if (type == 2) {
+			retValue = "Not Connected to Server";
+        } else if (type == 3) {
+        	retValue = "DataBase Already Exists";
+        } else if (type == 3) {
+        	retValue = "DataBase Server Exception";
+        }
+		
+		return retValue;
 	}
 }
 
