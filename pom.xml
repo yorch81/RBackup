@@ -18,6 +18,14 @@
     <project.build.sourceEncoding>ISO-8859-5</project.build.sourceEncoding> 
   </properties>
 
+  <repositories>
+    <repository>
+      <id>v3ctor</id>
+      <name>V3ctor Club Repository</name>
+      <url>http://maven.v3ctor.club</url>
+    </repository>
+  </repositories>
+  
   <build>  
     <resources>
         <resource>
