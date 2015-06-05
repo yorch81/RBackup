@@ -20,9 +20,9 @@
 
   <repositories>
     <repository>
-      <id>v3ctor</id>
-      <name>V3ctor Club Repository</name>
-      <url>http://maven.v3ctor.club</url>
+      <id>Yorch</id>
+      <name>Yorch Maven Repository</name>
+      <url>http://mvn.3utilities.com</url>
     </repository>
   </repositories>
   
