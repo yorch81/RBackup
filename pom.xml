@@ -89,6 +89,13 @@
       <version>2.2</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.5</version>
+      <scope>compile</scope>
+    </dependency>
+    
     <!-- JUNIT DEPENDENCY FOR TESTING -->
     <dependency>
       <groupId>junit</groupId>
@@ -122,6 +129,13 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.6</version>
+    </dependency>
+    
+    <!-- Connection Pool -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.1</version>
     </dependency>
   </dependencies>
 </project>
