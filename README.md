@@ -1,7 +1,7 @@
-# RBackup #
+# RBackup with Restore #
 
 ## Description ##
-Web Tools for Remote Backup DataBases SQL Server and MySQL
+Web Tools for Remote Backup and Restore DataBases SQL Server and MySQL
 
 ## Requirements ##
 * [Java](https://www.java.com/es/download/)
@@ -17,9 +17,9 @@ Web Tools for Remote Backup DataBases SQL Server and MySQL
 JavaDoc.
 
 ## Installation ##
-Generate and execute jar.
-
 Create configuration file with the next structure:
+
+~~~
 
 dbtype=MSSQLSERVER (or MYSQL)
 hostname=localhost (or localhost\INSTANCE_OF_SQL_SERVER)
@@ -30,6 +30,10 @@ port=8080 (Web Tool Port)
 basedir= (Directory Base)
 appuser= (Application User)
 apppassword= (Application Password)
+
+~~~
+
+Generate and execute jar.
 
 ## Notes ##
 The executable file of mysqldump must be accesible on Operating System PATH
