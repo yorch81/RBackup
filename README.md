@@ -28,6 +28,8 @@ password= (Password of User)
 dbname= (DataBase Name)
 port=8080 (Web Tool Port)
 basedir= (Directory Base)
+mdfdir= (Directory MDF)
+ldfdir= (Directory LDF)
 appuser= (Application User)
 apppassword= (Application Password)
 
