@@ -1,7 +1,5 @@
 package net.yorch.rbackup;
 
-import java.sql.ResultSet;
-
 /**
  * RBackup<br>
  * 
@@ -67,9 +65,9 @@ public class RBackup {
 	/**
 	 * Return a ResultSet with DataBases List
 	 * 
-	 * @return ResultSet
+	 * @return String
 	 */
-	public ResultSet dbList() {
+	public String dbList() {
 		return backup.dbList();
 	}
 	

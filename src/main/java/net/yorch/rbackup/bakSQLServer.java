@@ -1,9 +1,11 @@
 package net.yorch.rbackup;
 
-import java.sql.DriverManager;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  * bakSQLServer<br>
@@ -29,6 +31,13 @@ import java.sql.Statement;
  */
 public class bakSQLServer extends Backup {
 	/**
+	 * Connection Pool
+	 * 
+	 * VAR BasicDataSource pool Connection Pool
+	 */
+	private BasicDataSource pool = new BasicDataSource();
+	
+	/**
 	 * Constructor of Class
 	 *
 	 * @param hostname String DataBase Server
@@ -37,18 +46,36 @@ public class bakSQLServer extends Backup {
 	 * @param dbname String DataBase Name
 	 */
 	public bakSQLServer(String hostname, String username, String password, String dbname) {
-		String selectMethod = "Direct";
-		String portNumber = "1433";
-		String connectionUrl = "jdbc:sqlserver://" + hostname + ":" + portNumber + ";databaseName=" + dbname + ";user=" + username + ";password=" + password + ";selectMethod=" + selectMethod + ";"; 
-        
+		String portNumber = "1433"; 
+		Connection conn = null;
+		
         try {
-	        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        	// Init Pool
+        	pool.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		pool.setUrl("jdbc:sqlserver://" + hostname + ":" + portNumber);
+    		pool.setUsername(username);
+    		pool.setPassword(password);
+    		pool.setDefaultCatalog(dbname);
 	        
-	        this.conn = DriverManager.getConnection(connectionUrl);
+    		pool.setValidationQuery("select 1");
+    		
+    		conn = pool.getConnection();
+    		
+    		connected = true;
+    		
+    		conn.close();
         }
 	    catch (Exception e){
-	    	this.conn = null;
+	    	connected = false;
 	        e.printStackTrace();
+	    } finally {
+	    	if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	    }
 	}
 
@@ -62,6 +89,7 @@ public class bakSQLServer extends Backup {
 	@Override
 	public int backup(String filename, String database) {
 		int retValue = 0;
+		Connection conn = null;
 		
 		if (this.fileExists(filename))
 			retValue = 1;
@@ -76,12 +104,24 @@ public class bakSQLServer extends Backup {
 	        
 			if (this.isConnected()){
 				try {
-					stmt = this.conn.createStatement();
+					conn = pool.getConnection();
+					
+					stmt = conn.createStatement();
 					stmt.execute(query.toString());
+					
+					conn.close();
 				} catch (SQLException e) {
 					retValue = 3;
 					e.printStackTrace();
-				}
+				} finally {
+			    	if (conn != null)
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			    }
 			}
 			else
 				retValue = 2;
@@ -93,25 +133,41 @@ public class bakSQLServer extends Backup {
 	/**
 	 * Return a ResultSet with DataBases List
 	 * 
-	 * @return ResultSet
+	 * @return String
 	 */
 	@Override
-	public ResultSet dbList() {
+	public String dbList() {
 		Statement stmt = null;
         String query = "SELECT UPPER(sdb.name) AS description FROM master..sysdatabases sdb WHERE sdb.name NOT IN ('master','model','msdb','pubs','northwind','tempdb') ORDER BY sdb.name";
         ResultSet rs = null;
+        Connection conn = null;
+        String retValue = "";
         
 		if (this.isConnected()){
 			try {
-				stmt = this.conn.createStatement();
+				conn = pool.getConnection();
+				
+				stmt = conn.createStatement();
 				rs = stmt.executeQuery(query);
+				
+				retValue = dbAsOption(rs);
+				
+				conn.close();
 			} catch (SQLException e) {
 				rs = null;
 				e.printStackTrace();
-			}
+			} finally {
+		    	if (conn != null)
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 		}
 		
-		return rs;
+		return retValue;
 	}
 
 	/**
@@ -126,6 +182,7 @@ public class bakSQLServer extends Backup {
 	@Override
 	public int restore(String filename, String database, String mdfDir, String ldfDir) {
 		int retValue = 0;
+		Connection conn = null;
 		
 		if (! this.fileExists(filename))
 			retValue = 1;
@@ -146,7 +203,9 @@ public class bakSQLServer extends Backup {
 						
 						// Gets Logical Names
 						String command = "RESTORE FILELISTONLY FROM DISK = N'" + filename + "'";
-						stmt = this.conn.createStatement();
+						
+						conn = pool.getConnection();
+						stmt = conn.createStatement();
 						ResultSet rs = stmt.executeQuery(command);
 						
 						while(rs.next()){
@@ -168,12 +227,22 @@ public class bakSQLServer extends Backup {
 						
 						command = query.toString().replace("/", "\\") + " NOUNLOAD,  REPLACE,  STATS = 10";
 						
-						stmt = this.conn.createStatement();
+						stmt = conn.createStatement();
 						stmt.execute(command);
+						
+						conn.close();
 					} catch (SQLException e) {
 						retValue = 4;
 						e.printStackTrace();
-					}
+					} finally {
+				    	if (conn != null)
+							try {
+								conn.close();
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				    }
 				}
 			}
 			else
@@ -195,20 +264,33 @@ public class bakSQLServer extends Backup {
 		Statement stmt = null;
         String query = "SELECT COUNT(*) AS TOTAL FROM master..sysdatabases sdb WHERE sdb.name = '" + dbName + "'";
         ResultSet rs = null;
+        Connection conn = null;
         
 		if (this.isConnected()){
 			try {
-				stmt = this.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				conn = pool.getConnection();
+				
+				stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				rs = stmt.executeQuery(query);
 				
 				rs.first();
 				
 				if (rs.getInt("TOTAL") > 0)
 					retValue = true;
+				
+				conn.close();
 			} catch (SQLException e) {
 				rs = null;
 				e.printStackTrace();
-			}
+			} finally {
+		    	if (conn != null)
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 		}
 		
 		return retValue;

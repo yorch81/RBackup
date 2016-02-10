@@ -1,9 +1,11 @@
 package net.yorch.rbackup;
 
-import java.sql.DriverManager;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  * bakMySQL<br>
@@ -38,7 +40,14 @@ public class bakMySQL extends Backup {
 	 * MySQL Password
 	 */
 	private String mysqlPassword = "";
-		
+	
+	/**
+	 * Connection Pool
+	 * 
+	 * VAR BasicDataSource pool Connection Pool
+	 */
+	private BasicDataSource pool = new BasicDataSource();
+	
 	/**
 	 * Constructor of Class
 	 *
@@ -49,18 +58,37 @@ public class bakMySQL extends Backup {
 	 */
 	public bakMySQL(String hostname, String username, String password, String dbname) {
 		String connectionUrl = "jdbc:mysql://" + hostname + "/" + dbname; 
+        Connection conn = null;
         
 		this.mysqlUser = username;
         this.mysqlPassword = password;
         
         try {
-	        Class.forName("com.mysql.jdbc.Driver");
+        	// Init Pool
+        	pool.setDriverClassName("com.mysql.jdbc.Driver");
+	        pool.setUsername(username);
+	        pool.setPassword(password);
+	        pool.setUrl(connectionUrl);
+
+	        pool.setValidationQuery("select 1");
 	        
-	        this.conn = DriverManager.getConnection(connectionUrl, username, password);
+	        conn = pool.getConnection();
+	        
+	        connected = true;
+	        
+	        conn.close();
         }
 	    catch (Exception e){
-	    	this.conn = null;
+	    	connected = false;
 	        e.printStackTrace();
+	    } finally {
+	    	if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	    }
 	}
 
@@ -74,6 +102,7 @@ public class bakMySQL extends Backup {
 	@Override
 	public int backup(String filename, String database) {
 		int retValue = 0;
+		Connection conn = null;
 		
 		if (this.fileExists(filename))
 			retValue = 1;
@@ -82,7 +111,9 @@ public class bakMySQL extends Backup {
 	        
 			if (this.isConnected()){
 				try {
-					stmt = this.conn.createStatement();
+					conn = pool.getConnection();
+					
+					stmt = conn.createStatement();
 					stmt.execute("FLUSH TABLES WITH READ LOCK;");
 					
 					if (executeMySQLDump(filename, database) != 0){
@@ -90,10 +121,20 @@ public class bakMySQL extends Backup {
 					}
 											
 					stmt.execute("UNLOCK TABLES;");
+					
+					conn.close();
 				} catch (SQLException e) {
 					retValue = 3;
 					e.printStackTrace();
-				}
+				} finally {
+			    	if (conn != null)
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			    }
 			}
 			else
 				retValue = 2;
@@ -105,25 +146,41 @@ public class bakMySQL extends Backup {
 	/**
 	 * Return a ResultSet with DataBases List
 	 * 
-	 * @return ResultSet
+	 * @return String
 	 */
 	@Override
-	public ResultSet dbList() {
+	public String dbList() {
 		Statement stmt = null;
         String query = "SELECT SCHEMA_NAME AS description FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME NOT IN ('information_schema', 'mysql', 'performance_schema', 'test') ORDER BY SCHEMA_NAME";
         ResultSet rs = null;
+        Connection conn = null;
+        String retValue = "";
         
 		if (this.isConnected()){
 			try {
-				stmt = this.conn.createStatement();
+				conn = pool.getConnection();
+				
+				stmt = conn.createStatement();
 				rs = stmt.executeQuery(query);
+				
+				retValue = this.dbAsOption(rs);
+				
+				conn.close();
 			} catch (SQLException e) {
 				rs = null;
 				e.printStackTrace();
-			}
+			} finally {
+		    	if (conn != null)
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 		}
 		
-		return rs;
+		return retValue;
 	}
 	 
 	/**
@@ -179,6 +236,7 @@ public class bakMySQL extends Backup {
 	@Override
 	public int restore(String filename, String database, String mdfDir, String ldfDir) {
 		int retValue = 0;
+		Connection conn = null;
 		
 		if (! this.fileExists(filename))
 			retValue = 1;
@@ -191,7 +249,9 @@ public class bakMySQL extends Backup {
 				}
 				else {
 					try {
-						stmt = this.conn.createStatement();
+						conn = pool.getConnection();
+						
+						stmt = conn.createStatement();
 						stmt.execute("CREATE SCHEMA IF NOT EXISTS " + database + ";");
 						stmt.execute("SET FOREIGN_KEY_CHECKS=0;");
 										
@@ -200,10 +260,20 @@ public class bakMySQL extends Backup {
 						}
 												
 						stmt.execute("SET FOREIGN_KEY_CHECKS=1;;");
+						
+						conn.close();
 					} catch (SQLException e) {
 						retValue = 4;
 						e.printStackTrace();
-					}
+					} finally {
+				    	if (conn != null)
+							try {
+								conn.close();
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				    }
 				}	
 			}
 			else
@@ -263,23 +333,36 @@ public class bakMySQL extends Backup {
 	private boolean dbExists(String dbName) {
 		boolean retValue = false;
 		
+		Connection conn = null;
 		Statement stmt = null;
         String query = "SELECT COUNT(*) AS TOTAL FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + dbName + "'";
         ResultSet rs = null;
         
 		if (this.isConnected()){
 			try {
-				stmt = this.conn.createStatement();
+				conn = pool.getConnection();
+				
+				stmt = conn.createStatement();
 				rs = stmt.executeQuery(query);
 				
 				rs.first();
 				
 				if (rs.getInt("TOTAL") > 0)
 					retValue = true;
+				
+				conn.close();
 			} catch (SQLException e) {
 				rs = null;
 				e.printStackTrace();
-			}
+			} finally {
+		    	if (conn != null)
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 		}
 		
 		return retValue;

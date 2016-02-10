@@ -1,8 +1,8 @@
 package net.yorch.rbackup;
 
 import java.io.File;
-import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Backup<br>
@@ -28,21 +28,21 @@ import java.sql.ResultSet;
  */
 public abstract class Backup {
 	/**
-     * Connection DB Handler
+     * Connection Flag
      *
-     * VAR Connection conn DB Connection
+     * VAR boolean connected Connection Flag
      */
-	protected Connection conn = null;
+	protected boolean connected = false;
 	
 	/**
-	 * Return true if Connected
-	 *
+	 * Return true if connected else false
+	 * 
 	 * @return boolean
-	 */	
-	public boolean isConnected() {
-		return (this.conn == null ? false : true);
+	 */
+	protected boolean isConnected() {
+		return connected;
 	}
-		
+	
 	/**
 	 * Check if file exists
 	 * 
@@ -53,6 +53,31 @@ public abstract class Backup {
 		File bakFile = new File(filename);
 	
 		return bakFile.exists();
+	}
+	
+	/**
+	 * Return List DataBases as HTML Option 
+	 * 
+	 * @param rsDb ResultSet of List of DataBases
+	 * @return String
+	 */
+	protected String dbAsOption(ResultSet rsDb) {
+		StringBuilder html = new StringBuilder("");
+		
+		try {
+			while(rsDb.next()){
+				html.append("<option value=\"");
+				html.append(rsDb.getString("description"));
+		
+				html.append("\">");
+				html.append(rsDb.getString("description"));
+				html.append("</option>\n");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return html.toString();
 	}
 	
 	/**
@@ -67,9 +92,9 @@ public abstract class Backup {
 	/**
 	 * Return a ResultSet with DataBases List
 	 * 
-	 * @return ResultSet
+	 * @return String
 	 */
-	public abstract ResultSet dbList ();
+	public abstract String dbList ();
 	
 	/**
 	 * Execute Restore

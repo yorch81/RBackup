@@ -251,7 +251,7 @@ public class WebApp {
 	 */
 	private StringWriter getRBackupTemplate(RBackup rbackup) {
 		Map<String, Object> tempData = new HashMap<String, Object>();
-		String listDb = dbAsOption(rbackup.dbList());
+		String listDb = rbackup.dbList();
 		
 		tempData.put("listDb", listDb);
 		tempData.put("baseDir", this.basedir);
@@ -263,30 +263,6 @@ public class WebApp {
 		rbackupTemp = null;
 		
 		return swRBackup;
-	}
-	
-	/**
-	 * Return List DataBases as HTML Option 
-	 * 
-	 * @param rsDb ResultSet of List of DataBases
-	 * @return String
-	 */
-	private String dbAsOption(ResultSet rsDb) {
-		StringBuilder html = new StringBuilder("");
-		
-		try {
-			while(rsDb.next()){
-				html.append("<option value=\"");
-				html.append(rsDb.getString("description"));
-				html.append("\">");
-				html.append(rsDb.getString("description"));
-				html.append("</option>\n");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return html.toString();
 	}
 	
 	/**
