@@ -214,29 +214,31 @@
 					file = files[arrLen];
 
 					$('#txtFile').val(file);
-					$('#btn_backup').html("Restore");
+					//$('#btn_backup').html("Restore");
 				});
 			
 				$('#explorer').on('filetreeexpand', 
 			    		function (e, data){
 							$('#txtPath').val(data.rel);
-							$('#btn_backup').html("Backup");
+							//$('#btn_backup').html("Backup");
 							$('#txtFile').val("");
 			    });
 				
 				$("#btn_backup").click(function(){
-					if ($('#btn_backup').html() == "Backup"){
-						rbackup.setCurrentDir($('#txtPath').val());
-		    			rbackup.setFileName($('#txtFile').val());
-		    			rbackup.setDbName($('#cmbDb').val());
-		    			
-						rbackup.backup();
-					}
-					else{
-						$('#processing-restore').modal('toggle');
-					}
+					rbackup.setCurrentDir($('#txtPath').val());
+	    			rbackup.setFileName($('#txtFile').val());
+	    			rbackup.setDbName($('#cmbDb').val());
+	    			
+					rbackup.backup();
 			    });
 
+				$("#btn_validate").click(function(){
+					if($('#txtFile').val() != '')
+						$('#processing-restore').modal('toggle');
+					else
+						bootbox.alert("Please select a backup for restore");
+			    });
+			    
 			    $("#btn_restore").click(function(){
 					rbackup.setCurrentDir($('#txtPath').val());
 	    			rbackup.setFileName($('#txtFile').val());
@@ -278,9 +280,14 @@
 				<input id="txtFile" type="text" class="form-control" placeholder="Backup File Name" name="txtFile" required>
 								
 				<div id="explorer" class="file_explorer"></div>
-				
-				<button id="btn_backup" class="btn btn-lg btn-primary btn-block">Backup</button>
-			</div>	        
+				<br>
+				<div>
+					<center>
+						<button id="btn_backup" class="btn btn-lg btn-info">Backup</button>
+						<button id="btn_validate" class="btn btn-lg btn-success">Restore</button>
+					</center>
+				</div>
+			</div>    
 		</div>
 		
 		<!-- Static Modal Restore Data -->
@@ -314,7 +321,7 @@
                     <div class="modal-body">
                         <center>
                             <p><h3>Jorge Alberto Ponce Turrubiates</h3></p>
-                            <p><h5><a href="mailto:the.yorch@gmail.com<">the.yorch@gmail.com</a></h5></p>
+                            <p><h5><a href="mailto:the.yorch@gmail.com">the.yorch@gmail.com</a></h5></p>
                             <p><h5><a href="http://the-yorch.blogspot.mx/">Blog</a></h5></p>
                             <p><h5><a href="https://bitbucket.org/yorch81">BitBucket</a></h5></p>
                             <p><h5><a href="https://github.com/yorch81">GitHub</a></h5></p>
