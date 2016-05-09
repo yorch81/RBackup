@@ -50,6 +50,7 @@ public class RBackupApp {
 			String user = config.getProperty("user");
 			String password = config.getProperty("password");
 			String dbname = config.getProperty("dbname");
+			int dbport = Integer.parseInt(config.getProperty("dbport"));
 			String port = config.getProperty("port");
 			String basedir = config.getProperty("basedir");
 			String mdfdir = config.getProperty("mdfdir");
@@ -63,9 +64,9 @@ public class RBackupApp {
 			RBackup rbackup = null;
 			
 			if (dbType.equals("MSSQLSERVER"))
-				rbackup = new RBackup(RBackup.MSSQLSERVER, hostname, user, password, dbname);
+				rbackup = new RBackup(RBackup.MSSQLSERVER, hostname, user, password, dbname, dbport);
 			else
-				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname);
+				rbackup = new RBackup(RBackup.MYSQL, hostname, user, password, dbname, dbport);
 						
 			if (! WebApp.dirExists(basedir)){
 				System.out.println("Directory Base not Exists");

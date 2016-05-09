@@ -55,9 +55,11 @@ public class bakMySQL extends Backup {
 	 * @param username String DataBase User
 	 * @param password String User Password
 	 * @param dbname String DataBase Name
+	 * @param dbport int DataBase Port
 	 */
-	public bakMySQL(String hostname, String username, String password, String dbname) {
-		String connectionUrl = "jdbc:mysql://" + hostname + "/" + dbname; 
+	public bakMySQL(String hostname, String username, String password, String dbname, int dbport) {
+		String portNumber = String.valueOf(dbport);
+		String connectionUrl = "jdbc:mysql://" + hostname + ":" + portNumber + "/" + dbname; 
         Connection conn = null;
         
 		this.mysqlUser = username;

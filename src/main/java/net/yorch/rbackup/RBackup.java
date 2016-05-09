@@ -42,13 +42,14 @@ public class RBackup {
 	 * @param username String DataBase User
 	 * @param password String User Password
 	 * @param dbname String DataBase Name
+	 * @param dbport int DataBase Port
 	 * @see RBackup
 	 */
-	public RBackup(int type, String hostname, String username, String password, String dbname) {
+	public RBackup(int type, String hostname, String username, String password, String dbname, int dbport) {
 		if (type == RBackup.MSSQLSERVER)
-			backup = new bakSQLServer(hostname, username, password, dbname);
+			backup = new bakSQLServer(hostname, username, password, dbname, dbport);
 		else
-			backup = new bakMySQL(hostname, username, password, dbname);
+			backup = new bakMySQL(hostname, username, password, dbname, dbport);
 	}	
 
 	/**

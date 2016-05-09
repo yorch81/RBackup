@@ -44,9 +44,10 @@ public class bakSQLServer extends Backup {
 	 * @param username String DataBase User
 	 * @param password String User Password
 	 * @param dbname String DataBase Name
+	 * @param dbport int DataBase Port
 	 */
-	public bakSQLServer(String hostname, String username, String password, String dbname) {
-		String portNumber = "1433"; 
+	public bakSQLServer(String hostname, String username, String password, String dbname, int dbport) {
+		String portNumber = String.valueOf(dbport); 
 		Connection conn = null;
 		
         try {
