@@ -49,6 +49,11 @@ public class bakMySQL extends Backup {
 	private BasicDataSource pool = new BasicDataSource();
 	
 	/**
+	 * Flush Executions
+	 */
+	private byte flush = 0;
+	
+	/**
 	 * Constructor of Class
 	 *
 	 * @param hostname String DataBase Server
@@ -88,7 +93,6 @@ public class bakMySQL extends Backup {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    }
@@ -116,12 +120,21 @@ public class bakMySQL extends Backup {
 					conn = pool.getConnection();
 					
 					stmt = conn.createStatement();
-					stmt.execute("FLUSH TABLES WITH READ LOCK;");
+					
+					if (flush == 0) {
+						stmt.execute("FLUSH TABLES WITH READ LOCK;");
+						
+						flush++;
+					}
+						
 					
 					if (executeMySQLDump(filename, database) != 0){
 						retValue = 2;
 					}
-											
+						
+					if (flush > 0)
+						flush--;
+					
 					stmt.execute("UNLOCK TABLES;");
 					
 					conn.close();
@@ -133,7 +146,6 @@ public class bakMySQL extends Backup {
 						try {
 							conn.close();
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 			    }
@@ -176,7 +188,6 @@ public class bakMySQL extends Backup {
 					try {
 						conn.close();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 		    }
@@ -272,7 +283,6 @@ public class bakMySQL extends Backup {
 							try {
 								conn.close();
 							} catch (SQLException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 				    }
@@ -361,7 +371,6 @@ public class bakMySQL extends Backup {
 					try {
 						conn.close();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 		    }
