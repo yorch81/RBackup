@@ -7,6 +7,8 @@ import java.sql.Statement;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import java.util.UUID;
+
 /**
  * bakMySQL<br>
  * 
@@ -49,9 +51,9 @@ public class bakMySQL extends Backup {
 	private BasicDataSource pool = new BasicDataSource();
 	
 	/**
-	 * Flush Executions
+	 * Flush UUID
 	 */
-	private byte flush = 0;
+	private String flushUUID = "";
 	
 	/**
 	 * Constructor of Class
@@ -121,10 +123,12 @@ public class bakMySQL extends Backup {
 					
 					stmt = conn.createStatement();
 					
-					if (flush == 0) {
+					String uuid = UUID.randomUUID().toString();
+							
+					if (flushUUID.isEmpty()) {
 						stmt.execute("FLUSH TABLES WITH READ LOCK;");
 						
-						flush++;
+						flushUUID = uuid;
 					}
 						
 					
@@ -132,8 +136,8 @@ public class bakMySQL extends Backup {
 						retValue = 2;
 					}
 						
-					if (flush > 0)
-						flush--;
+					if (flushUUID.equals(uuid))
+						flushUUID = "";
 					
 					stmt.execute("UNLOCK TABLES;");
 					
