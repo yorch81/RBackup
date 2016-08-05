@@ -20,18 +20,18 @@
 
   <repositories>
     <repository>
-  <id>jcenter</id>
-  <url>http://jcenter.bintray.com </url>
-  <snapshots>
-    <enabled>true</enabled>
-    <updatePolicy>never</updatePolicy>
-    <checksumPolicy>warn</checksumPolicy>
-  </snapshots>
-   <releases>
-     <enabled>true</enabled>
-     <checksumPolicy>warn</checksumPolicy>
-  </releases>
-</repository>
+      <id>jcenter</id>
+      <url>http://jcenter.bintray.com </url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </snapshots>
+       <releases>
+         <enabled>true</enabled>
+         <checksumPolicy>warn</checksumPolicy>
+      </releases>
+    </repository>
 
     <repository>
       <id>Yorch</id>
@@ -153,10 +153,10 @@
     </dependency>
     <!-- Interactive -->
     <dependency>
-    <groupId>net.yorch</groupId>
-    <artifactId>PropInteractive</artifactId>
-    <version>1.0</version>
-  </dependency>
+      <groupId>net.yorch</groupId>
+      <artifactId>PropInteractive</artifactId>
+      <version>1.0</version>
+    </dependency>
 
   </dependencies>
 </project>

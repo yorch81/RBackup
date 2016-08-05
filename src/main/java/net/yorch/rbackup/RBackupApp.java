@@ -88,29 +88,27 @@ public class RBackupApp {
 			}
 							
 		} catch (FileNotFoundException e) {
-			System.out.println("Archivo de configuración no existe, configure correctamente la aplicación");
+			System.out.println("Configuration File does not Exists, please configure");
 			
 			Interactive interactive = new Interactive();
 			
-			interactive.addQuestion("dbtype","Teclee el tipo de Base de Datos: ");
-			interactive.addQuestion("hostname","Teclee el nombre del hostname: ");
-			interactive.addQuestion("user","Telcle el nombre de usuario: ");
-			interactive.addQuestion("password","Teclee el password: ");
-			interactive.addQuestion("dbname","Teclee el nombre de la Base de Datos: ");
-			interactive.addQuestion("dbport","Teclee el puerto de la Base de Datos: ");
-			interactive.addQuestion("port","Teclee el puerto de la aplicacíon: ");
-			interactive.addQuestion("basedir","Teclee la dirección de la Base de Datos: ");
-			interactive.addQuestion("mdfdir","Teclee la direccion del archivo mdf: ");
-			interactive.addQuestion("ldfdir","Teclee la dirección del archivo ldf: ");
-			interactive.addQuestion("appuser","Teclee el nombre de usuario de la aplicación:  ");
-			interactive.addQuestion("apppassword","Teclee el password de la aplicacíon: ");
+			interactive.addQuestion("dbtype","Type Database (MSSQLSERVER/MYSQL):");
+			interactive.addQuestion("hostname","Type Database Server:");
+			interactive.addQuestion("user","Type Database User:");
+			interactive.addQuestion("password","Type User password:");
+			interactive.addQuestion("dbname","Type Database Name:");
+			interactive.addQuestion("dbport","Type Database Port:");
+			interactive.addQuestion("port","Type Application Web Port:");
+			interactive.addQuestion("basedir","Type Base Directory:");
+			interactive.addQuestion("mdfdir","Type MDF Directory:");
+			interactive.addQuestion("ldfdir","Type LDF Directory:");
+			interactive.addQuestion("appuser","Type Application User:");
+			interactive.addQuestion("apppassword","Type Application Password:");
 			
 			interactive.interactive();
 			interactive.save("rbackup.properties");
 			
-			System.out.printf("Archivo de Configuracion generado, reinicie la aplicación");
-			
-			e.printStackTrace();
+			System.out.printf("File generated, please restart Application");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
