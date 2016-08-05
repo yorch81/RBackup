@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import net.yorch.Interactive;
+
 /**
  * RBackupApp<br>
  * 
@@ -86,6 +88,28 @@ public class RBackupApp {
 			}
 							
 		} catch (FileNotFoundException e) {
+			System.out.println("Archivo de configuración no existe, configure correctamente la aplicación");
+			
+			Interactive interactive = new Interactive();
+			
+			interactive.addQuestion("dbtype","Teclee el tipo de Base de Datos: ");
+			interactive.addQuestion("hostname","Teclee el nombre del hostname: ");
+			interactive.addQuestion("user","Telcle el nombre de usuario: ");
+			interactive.addQuestion("password","Teclee el password: ");
+			interactive.addQuestion("dbname","Teclee el nombre de la Base de Datos: ");
+			interactive.addQuestion("dbport","Teclee el puerto de la Base de Datos: ");
+			interactive.addQuestion("port","Teclee el puerto de la aplicacíon: ");
+			interactive.addQuestion("basedir","Teclee la dirección de la Base de Datos: ");
+			interactive.addQuestion("mdfdir","Teclee la direccion del archivo mdf: ");
+			interactive.addQuestion("ldfdir","Teclee la dirección del archivo ldf: ");
+			interactive.addQuestion("appuser","Teclee el nombre de usuario de la aplicación:  ");
+			interactive.addQuestion("apppassword","Teclee el password de la aplicacíon: ");
+			
+			interactive.interactive();
+			interactive.save("rbackup.properties");
+			
+			System.out.printf("Archivo de Configuracion generado, reinicie la aplicación");
+			
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
