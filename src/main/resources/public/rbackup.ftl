@@ -263,6 +263,7 @@
 
 	    	<ul class="nav navbar-nav navbar-right">
               <li class="active" id="btn_credits"><a href="#">Credits<span class="sr-only">(current)</span></a></li>
+              <li id="btn_credits"><a href="/exit">Exit<span class="sr-only">(current)</span></a></li>
             </ul>
 	      </div>
 	    </div>

@@ -137,7 +137,21 @@ public class WebApp {
 				return template;
 	        }
 	    });
-				
+			
+		/**
+	     * Path /exit
+	     */
+		get("/exit", new Route() {
+	        @Override
+	        public Object handle(Request request, Response response) {
+	        	request.session().removeAttribute("appuser");
+
+	        	response.redirect("/");
+
+	        	return "exit";
+	        }
+	    });
+
 		/**
 	     * Path /getfiles
 	     * Get Files Structure
